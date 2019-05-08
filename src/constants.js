@@ -1,3 +1,5 @@
+/* TODO: store this in a Dynamo metadata table */
+
 exports.MAPS_LIST = {
   'hanamura': 'Hanamura',
   'horizon': 'Horizon Lunar Colony',
@@ -33,6 +35,7 @@ exports.MAPS_LIST = {
 }
 
 exports.ACCOUNTS_LIST = {
+  'rama': 'Ramanujan',
   'ramanujan': 'Ramanujan',
   'pablo': 'Pablo',
   'traianus': 'Traianus',
