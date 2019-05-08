@@ -46,16 +46,18 @@ exports.ACCOUNTS_LIST = {
   'neon': 'NeonXD',
   'coyce': 'Coyce',
   'trutututu': 'Trutututu',
-  'bats': 'Trutututu'
+  'bats': 'Trutututu',
+  'freestyle': 'Freestyle'
 }
 
 exports.PLAYERS_LIST = {
-  'pablo': ['Ramanujan', 'Pablo', 'Traianus'],
-  'ninjin': ['AhuraMahzda', 'Milk', 'Ninjin', 'Lola'],
-  'robo': ['Robogeeker', 'Dwon'],
-  'coyce': ['Coyce'],
-  'neon': ['NeonXD'],
-  'bats': ['Trutututu']
+  'Pablo': ['Ramanujan', 'Pablo', 'Traianus'],
+  'Ninjin': ['AhuraMahzda', 'Milk', 'Ninjin', 'Lola'],
+  'Robo': ['Robogeeker', 'Dwon'],
+  'Coyce': ['Coyce'],
+  'Neon': ['NeonXD'],
+  'Bats': ['Trutututu'],
+  'Freestyle': ['Freestyle']
 }
 
 exports.HEROES_LIST = {

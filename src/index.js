@@ -76,6 +76,7 @@ const parse_players = t => {
 const m = async _ => {
   initAWS()
   await populateLastSr(last_recorded_sr)
+  console.log(`Last recorded SR: ${ Object.entries(last_recorded_sr).map(([a, b]) => `${ a }: ${ b }`) }`)
 
   const client = new Discord.Client()
 
@@ -88,8 +89,6 @@ const m = async _ => {
       let [_, result_text, map_text, extras_text] = matching_msg.map(a => a.toLowerCase())
 
       try {
-        for (let e of extras_text.split("\n"))
-          console.log('Extra: ', e)
         let match = {
           author: msg.author.username,
           result: result_text === 'win' ? 'W' : result_text === 'loss' ? 'L' : 'D',
