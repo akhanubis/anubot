@@ -10,7 +10,7 @@ exports.saveMatch = match => {
           ...p
         }
       }).promise())
-  Promise.all(promises)
+  return Promise.all(promises)
   .then(_ => console.log(`${ match.map } saved`))
 }
 
@@ -18,6 +18,7 @@ exports.saveMatch = match => {
 if (!BEANSTALK)
   exports.saveMatch = match => {
     console.log(`[Dev] Storing ${ match.map }`)
+    return Promise.resolve()
   }
 
 exports.populateLastSr = last_sr => {
