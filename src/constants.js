@@ -44,6 +44,7 @@ exports.ACCOUNTS_LIST = {
   'milk': 'Milk',
   'ninjin': 'Ninjin',
   'lola': 'Lola',
+  'robo': 'Robogeeker',
   'robogeeker': 'Robogeeker',
   'dwon': 'Dwon',
   'neon': 'NeonXD',
