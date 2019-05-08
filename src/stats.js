@@ -9,8 +9,8 @@ const
   All time stats for %ACCOUNT%
   ----------------------------
 
-  Win Rate (draw as loss): %WR_DRAW%\n
-  Win Rate (no draw): %WR_NO_DRAW%\n
+  Win Rate (draw as loss): %WR_DRAW%%\n
+  Win Rate (no draw): %WR_NO_DRAW%%\n
   Wins: %WINS%\n
   Draws: %DRAWS%\n
   Losses: %LOSSES%\n
