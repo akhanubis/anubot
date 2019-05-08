@@ -6,7 +6,6 @@ const { setActivity } = require('./utils')
 
 const MATCHERS = [
   require('./match'),
-  require('./robo'),
   require('./github'),
   require('./stats')
 ]
