@@ -1,5 +1,5 @@
 const
-  ROBO_REGEX = /\!robo/i,
+  ROBO_REGEX = /^\!robo/i,
   REPLY = 'Did someone say !robo?',
   NAME = 'Robo'
 

@@ -13,25 +13,22 @@ exports.name = NAME
 exports.regex = MATCH_SUMMARY_REGEX
 
 exports.process = msg => {
-  let matching_msg = msg.content.match(MATCH_SUMMARY_REGEX)
-  if (matching_msg) {
-    let [_, result_text, map_text, extras_text] = matching_msg.map(a => a.toLowerCase())
+  let matching_msg = msg.content.match(MATCH_SUMMARY_REGEX),
+      [_, result_text, map_text, extras_text] = matching_msg.map(a => a.toLowerCase()),
+      match = {
+        author: msg.author.username,
+        result: result_text === 'win' ? 'W' : result_text === 'loss' ? 'L' : 'D',
+        map: parse_map(map_text),
+        notes: parse_notes(extras_text),
+        players: parse_players(extras_text),
+        timestamp: new Date().toISOString()
+      }
+  for (let p of match.players)
+    if (p.sr)
+      global.last_recorded_sr[p.account] = p.sr.end
 
-    let match = {
-      author: msg.author.username,
-      result: result_text === 'win' ? 'W' : result_text === 'loss' ? 'L' : 'D',
-      map: parse_map(map_text),
-      notes: parse_notes(extras_text),
-      players: parse_players(extras_text),
-      timestamp: new Date().toISOString()
-    }
-    for (let p of match.players)
-      if (p.sr)
-        global.last_recorded_sr[p.account] = p.sr.end
-
-    saveMatch(match)
-    .then(msg.reply(`${ match.map } saved`))
-  }
+  saveMatch(match)
+  .then(msg.reply(`${ match.map } saved`))
 }
 
 const parse_map = t => {

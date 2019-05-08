@@ -1,7 +1,7 @@
 const { GITHUB_REPOSITORY } = require('./env')
 
 const
-  REGEX = /\!repo/i,
+  REGEX = /^\!repo/i,
   REPLY = `You can find my source code at ${ GITHUB_REPOSITORY }`,
   NAME = 'Repo'
 

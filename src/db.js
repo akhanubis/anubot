@@ -41,3 +41,22 @@ exports.populateLastSr = last_sr => {
     }
   })
 }
+
+exports.matchesByAccount = async acc => {
+  let last_evaluated_key,
+      out = [],
+      params = {
+        TableName: MATCHES_TABLE,
+        KeyConditionExpression: 'account = :a',
+        ExpressionAttributeValues: { ':a': acc }
+      }
+  while(true) {
+    params.ExclusiveStartKey = last_evaluated_key
+    data = await global.db.query(params).promise()
+    last_evaluated_key = data.LastEvaluatedKey
+    out = [...out, ...data.Items]
+    if (!last_evaluated_key)
+      break
+  }
+  return out
+}

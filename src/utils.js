@@ -1,0 +1,1 @@
+exports.emoji = name => global.client.emojis.find(e => e.name === name) || `*${ name }*`
