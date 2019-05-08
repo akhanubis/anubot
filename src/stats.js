@@ -23,7 +23,7 @@ exports.regex = REGEX
 
 exports.process = msg => {
   let [_, acc] = msg.content.match(REGEX),
-      full_account = ACCOUNTS_LIST[acc]
+      full_account = ACCOUNTS_LIST[acc.toLowerCase()]
   if (!full_account)
     msg.reply(`Who the fuck is ${ acc }? ${ emoji('dinking') }`)
   else
