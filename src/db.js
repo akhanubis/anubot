@@ -37,7 +37,7 @@ exports.populateLastSr = last_sr => {
     for (let response of responses) {
       let last_match = response.Items[0]
       if (last_match)
-        last_sr[last_match.account] = last_match.sr.end
+        last_sr[last_match.account] = (last_match.sr || {}).end
     }
   })
 }
