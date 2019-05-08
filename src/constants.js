@@ -113,6 +113,7 @@ exports.HEROES_LIST = {
 
 exports.ACTIVITIES = [
   ['the SR go down', { type: 'WATCHING' }],
-  ['to Leonard Cohen', { type: 'LISTENING' }],
+  ['Leonard Cohen', { type: 'LISTENING' }],
+  ['teammates flame me :(', { type: 'LISTENING' }],
   ['a happy song', { type: 'PLAYING' }]
 ]
