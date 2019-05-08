@@ -15,12 +15,13 @@ exports.regex = MATCH_SUMMARY_REGEX
 exports.process = msg => {
   let matching_msg = msg.content.match(MATCH_SUMMARY_REGEX),
       [_, result_text, map_text, extras_text] = matching_msg.map(a => a.toLowerCase()),
+      result = result_text === 'win' ? 'W' : result_text === 'loss' ? 'L' : 'D'
       match = {
         author: msg.author.username,
-        result: result_text === 'win' ? 'W' : result_text === 'loss' ? 'L' : 'D',
+        result: result,
         map: parse_map(map_text),
         notes: parse_notes(extras_text),
-        players: parse_players(extras_text),
+        players: parse_players(extras_text, result),
         timestamp: new Date().toISOString()
       }
   for (let p of match.players)
@@ -44,7 +45,7 @@ const parse_notes = t => {
     return notes[1].trim()
 }
 
-const parse_sr = (account, data) => {
+const parse_sr = (account, data, result) => {
   let sr_data = data.match(SR_REGEX),
       start_sr, end_sr
 
@@ -53,7 +54,7 @@ const parse_sr = (account, data) => {
     end_sr = parseInt(sr_data[3]) || undefined
     /* assume last recorded sr is prev sr */
     let last_sr = last_recorded_sr[account]
-    if (last_sr && last_sr >= end_sr - 30 && last_sr <= end_sr + 30)
+    if (last_sr && ((result === 'W' && last_sr < end_sr - 10 && last_sr >= end_sr - 30) || (result === 'L' && last_sr > end_sr + 10 && last_sr <= end_sr + 30) || (result === 'D' && last_sr === end_sr)))
       start_sr = last_sr
   }
   return {
@@ -78,14 +79,14 @@ const parse_account = acc_text => {
 
 const find_player = account => Object.entries(PLAYERS_LIST).find(([_, accounts]) => accounts.includes(account))[0]
 
-const parse_players = t => {
+const parse_players = (t, result) => {
   return t.split("\n").filter(l => !l.startsWith('notes:')).map(l => {
     let [acc, data] = l.split(':').map(a => a.trim().toLowerCase()),
         account = parse_account(acc)
     return {
       account: account,
       player: find_player(account),
-      sr: parse_sr(account, data),
+      sr: parse_sr(account, data, result),
       heroes: parse_heroes(data)
     }
   })
