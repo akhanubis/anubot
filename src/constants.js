@@ -109,3 +109,9 @@ exports.HEROES_LIST = {
   'zen': 'Zenyatta',
   'zenyatta': 'Zenyatta'
 }
+
+exports.ACTIVITIES = [
+  ['the SR go down', { type: 'WATCHING' }],
+  ['to Leonard Cohen', { type: 'LISTENING' }],
+  ['a happy song', { type: 'PLAYING' }]
+]

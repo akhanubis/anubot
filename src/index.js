@@ -1,7 +1,8 @@
 const Discord = require('discord.js')
-const { DISCORD_TOKEN } = require('./env')
+const { DISCORD_TOKEN, ACTIVITY_REFRESH_INTERVAL_IN_S } = require('./env')
 const { initAWS } = require('./startup')
 const { populateLastSr } = require('./db')
+const { setActivity } = require('./utils')
 
 const MATCHERS = [
   require('./match'),
@@ -19,6 +20,8 @@ const m = async _ => {
 
   global.client.on('ready', () => {
     console.log(`Logged in as ${ global.client.user.tag }!`)
+    setInterval(setActivity, ACTIVITY_REFRESH_INTERVAL_IN_S * 1000)
+    setActivity()
   })
   global.client.on('message', msg => {
     for (let m of MATCHERS)
