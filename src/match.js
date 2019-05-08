@@ -5,7 +5,10 @@ const { saveMatch } = require('./db')
 const
   MATCH_SUMMARY_REGEX = /^\*?\*?\((win|loss|draw)\) (.+)\*?\*?\n([\s\S]+)$/i,
   NOTES_REGEX = /notes\:([\s\S]+)$/i,
-  SR_REGEX = /((\d{4})-)?(\d{4})/
+  SR_REGEX = /((\d{4})-)?(\d{4})/,
+  NAME = 'Match'
+
+exports.name = NAME
 
 exports.regex = MATCH_SUMMARY_REGEX
 

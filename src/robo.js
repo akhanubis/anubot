@@ -1,6 +1,9 @@
 const
   ROBO_REGEX = /\!robo/i,
-  REPLY = 'Did someone say !robo?'
+  REPLY = 'Did someone say !robo?',
+  NAME = 'Robo'
+
+exports.name = NAME
 
 exports.regex = ROBO_REGEX
 

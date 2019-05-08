@@ -4,10 +4,12 @@ const { initAWS } = require('./startup')
 const { populateLastSr } = require('./db')
 const matchMatcher = require('./match')
 const roboMatcher = require('./robo')
+const githubMatcher = require('./github')
 
 const MATCHERS = [
   matchMatcher,
-  roboMatcher
+  roboMatcher,
+  githubMatcher
 ]
 
 global.last_recorded_sr = {}
@@ -25,11 +27,12 @@ const m = async _ => {
   client.on('message', msg => {
     for (let m of MATCHERS)
       if (msg.content.match(m.regex)) {
+        console.log(`Processing message with ${ m.name }`)
         try {
           m.process(msg)
         }
         catch(e) {
-          console.log('Error parsing match')
+          console.log('Error processing message')
           console.log(e)
         }
       }
