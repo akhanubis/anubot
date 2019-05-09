@@ -14,6 +14,13 @@ exports.saveMatch = match => {
   .then(_ => console.log(`${ match.map } saved`))
 }
 
+/* dont save in dev */
+if (!BEANSTALK)
+  exports.saveMatch = match => {
+    console.log(`[Dev] Storing ${ match.map }`)
+    return Promise.resolve()
+  }
+
 exports.populateLastSr = last_sr => {
   console.log('Fetching initial latest SR data...')
   let promises = Object.values(ACCOUNTS_LIST).map(acc => global.db.query({

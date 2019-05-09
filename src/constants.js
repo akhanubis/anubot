@@ -114,6 +114,7 @@ exports.HEROES_LIST = {
 exports.ACTIVITIES = [
   ['the SR go down', { type: 'WATCHING' }],
   ['Leonard Cohen', { type: 'LISTENING' }],
+  ['Ariana Grande', { type: 'LISTENING' }],
   ['teammates flame me :(', { type: 'LISTENING' }],
   ['a happy song', { type: 'PLAYING' }]
 ]
@@ -150,3 +151,9 @@ exports.USER_IDS = {
 }
 
 exports.WIN_REACTIONS = ['ole', 'mmyea']
+
+exports.RESULT_EMOJIS = {
+  W: [':peach:', ':pill:', ':avocado:', ':four_leaf_clover:'],
+  L: [':pensive:', ':tired_face:'],
+  D: [':sweat_smile:', ':disappointed_relieved:']
+}

@@ -1,13 +1,22 @@
 const stringSimilarity = require('string-similarity')
-const { MAPS_LIST, ACCOUNTS_LIST, PLAYERS_LIST, HEROES_LIST, PATS, WIN_REACTIONS } = require('./constants')
+const { MAPS_LIST, ACCOUNTS_LIST, PLAYERS_LIST, HEROES_LIST, PATS, WIN_REACTIONS, RESULT_EMOJIS } = require('./constants')
 const { saveMatch } = require('./db')
-const { emoji, pickRandom } = require('./utils')
+const { emoji, pickRandom, loss, draw, humanizedResult } = require('./utils')
 
 const
   MATCH_SUMMARY_REGEX = /^\*?\*?\((win|loss|draw)\) (.+)\*?\*?\n([\s\S]+)$/i,
-  NOTES_REGEX = /notes\:([\s\S]+)$/i,
+  NOTES_REGEX = /\*?notes\:([^\n]+)/i,
+  ACCOUNT_REGEX = /(\d\. )?([a-z0-9]+)\:(.+)$/i,
   SR_REGEX = /((\d{4})-)?(\d{4})/,
-  NAME = 'Match'
+  NAME = 'Match',
+  REPLY = `
+**(%RESULT%) %MAP% %RESULT_EMOJI%**
+%PLAYERS_DATA%
+%NOTES%
+**SR CHANGES %RESULT_EMOJI_2%**
+%SR_CHANGE_DATA%
+`
+
 
 exports.name = NAME
 
@@ -30,7 +39,10 @@ exports.process = msg => {
       global.last_recorded_sr[p.account] = p.sr.end
 
   saveMatch(match)
-  .then(_ => msg.react(match_reaction(match)))
+  .then(_ => {
+    reply_to_match(msg, match).then(new_msg => react_to_match(new_msg, match))
+    msg.delete()
+  })
 }
 
 const parse_map = t => {
@@ -53,10 +65,14 @@ const parse_sr = (account, data, result) => {
   if (sr_data) {
     start_sr = parseInt(sr_data[2]) || undefined
     end_sr = parseInt(sr_data[3]) || undefined
-    /* assume last recorded sr is prev sr if it's in between a common sense range */
-    let last_sr = last_recorded_sr[account]
-    if (last_sr && ((result === 'W' && last_sr < end_sr - 10 && last_sr >= end_sr - 30) || (result === 'L' && last_sr > end_sr + 10 && last_sr <= end_sr + 30) || (result === 'D' && last_sr === end_sr)))
-      start_sr = last_sr
+    if (result === 'D')
+      start_sr = end_sr
+    else {
+      /* assume last recorded sr is prev sr if it's in between a common sense range */
+      let last_sr = last_recorded_sr[account]
+      if (last_sr && ((result === 'W' && last_sr < end_sr - 10 && last_sr >= end_sr - 35) || (result === 'L' && last_sr > end_sr + 10 && last_sr <= end_sr + 35)))
+        start_sr = last_sr
+    }
   }
   return {
     start: start_sr,
@@ -81,8 +97,10 @@ const parse_account = acc_text => {
 const find_player = account => Object.entries(PLAYERS_LIST).find(([_, accounts]) => accounts.includes(account))[0]
 
 const parse_players = (t, result) => {
-  return t.split("\n").filter(l => !l.startsWith('notes:')).map(l => {
-    let [acc, data] = l.split(':').map(a => a.trim().toLowerCase()),
+  return t.split("\n").filter(l => !l.match(NOTES_REGEX) && l.match(ACCOUNT_REGEX)).map(l => {
+    let m = l.match(ACCOUNT_REGEX).map(a => (a || '').trim().toLowerCase()),
+        acc = m[2],
+        data = m[3],
         account = parse_account(acc)
     return {
       account: account,
@@ -93,13 +111,13 @@ const parse_players = (t, result) => {
   })
 }
 
-const match_reaction = match => {
+const react_to_match = (msg, match) => {
   let e
-  if (match.result === 'L')
+  if (loss(match))
     e = 'feelssadman'
-  if (match.result === 'D')
+  else if (draw(match))
     e = 'zzz~1'
-  if (match.result === 'W') {
+  else {
     let all_heroes_played = match.players.reduce((all, p) => [...all, ...p.heroes], []),
         pattable_heroes = Object.keys(PATS)
     all_heroes_played = Array.from(new Set(all_heroes_played))
@@ -109,5 +127,27 @@ const match_reaction = match => {
     else
       e = pickRandom(WIN_REACTIONS)
   }
-  return emoji(e)
+  return msg.react(emoji(e))
+}
+
+const reply_to_match = (msg, match) => {
+  let r_emoji = pickRandom(RESULT_EMOJIS[match.result]),
+      r_emoji_2 = pickRandom(RESULT_EMOJIS[match.result].filter(e => e !== r_emoji)),
+      notes = match.notes ? `***NOTES**: ${ match.notes }` : '%EMPTY_LINE%',
+      sr_data = match.players.map((p, i) => {
+        let diff = p.sr.start && p.sr.end ? `${ loss(match) ? '-' : '+' }${ Math.abs(p.sr.end - p.sr.start) }` : '??'
+        return `${ i + 1 }. **${ diff }** (${ p.sr.start ? p.sr.start : '????' }-${ p.sr.end ? p.sr.end : '????' })`
+      }).join("\n"),
+      players_data = match.players.map((p, i) => `${ i + 1}. **${ p.account }**: ${ [p.sr.end, ...p.heroes].filter(a => a).join(', ') }`).join("\n")
+      
+  return msg.channel.send(REPLY
+    .replace('%RESULT%', humanizedResult(match).toUpperCase())
+    .replace('%MAP%', match.map.toUpperCase())
+    .replace('%RESULT_EMOJI%', emoji(r_emoji))
+    .replace('%RESULT_EMOJI_2%', emoji(r_emoji_2))
+    .replace('%SR_CHANGE_DATA%', sr_data)
+    .replace('%PLAYERS_DATA%', players_data)
+    .replace('%NOTES%', notes)
+    .replace(/\%EMPTY_LINE\%\n/g, '')
+  )
 }

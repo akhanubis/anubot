@@ -24,7 +24,7 @@ const m = async _ => {
     setActivity()
   })
   global.client.on('message', msg => {
-    if (msg.channel.guild.id !== ALLOWED_SERVER)
+    if (msg.channel.guild.id !== ALLOWED_SERVER || msg.author.bot)
       return
     for (let m of MATCHERS)
       if (msg.content.match(m.regex)) {
