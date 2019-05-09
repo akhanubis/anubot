@@ -1,6 +1,7 @@
 const stringSimilarity = require('string-similarity')
 const { MAPS_LIST, ACCOUNTS_LIST, PLAYERS_LIST, HEROES_LIST } = require('./constants')
 const { saveMatch } = require('./db')
+const { emoji } = require('./utils')
 
 const
   MATCH_SUMMARY_REGEX = /^\*?\*?\((win|loss|draw)\) (.+)\*?\*?\n([\s\S]+)$/i,
@@ -29,7 +30,7 @@ exports.process = msg => {
       global.last_recorded_sr[p.account] = p.sr.end
 
   saveMatch(match)
-  .then(msg.reply(`${ match.map } saved`))
+  .then(msg.react(emoji(match.result === 'W' ? 'mmyea' : match.result === 'L' ? 'feelssadman' : 'zzz~1')))
 }
 
 const parse_map = t => {

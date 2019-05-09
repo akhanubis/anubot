@@ -117,3 +117,12 @@ exports.ACTIVITIES = [
   ['teammates flame me :(', { type: 'LISTENING' }],
   ['a happy song', { type: 'PLAYING' }]
 ]
+
+exports.EMOJIS = {
+  ole: '548558440822472714',
+  'unamused~1': '498163653275680778',
+  rager: '555849538695331861',
+  feelssadman: '560563582144741388',
+  mmyea: '560563647529877544',
+  'zzz~1': '498163652889804831'
+}
