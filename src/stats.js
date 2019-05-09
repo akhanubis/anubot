@@ -31,10 +31,10 @@ exports.process = msg => {
     .then(matches => {
       if (matches.length) {
         let s_data = stats(matches)
-        msg.reply(REPLY.replace('%ACCOUNT%', full_account).replace('%WR_DRAW%', s_data.wr_draw).replace('%WR_NO_DRAW%', s_data.wr_no_draw).replace('%WINS%', s_data.wins).replace('%DRAWS%', s_data.draws).replace('%LOSSES%', s_data.losses))
+        msg.channel.send(REPLY.replace('%ACCOUNT%', full_account).replace('%WR_DRAW%', s_data.wr_draw).replace('%WR_NO_DRAW%', s_data.wr_no_draw).replace('%WINS%', s_data.wins).replace('%DRAWS%', s_data.draws).replace('%LOSSES%', s_data.losses))
       }
       else
-        msg.reply(`No matches found for ${ full_account } ${ emoji('pepehands') }`)
+        msg.channel.send(`No matches found for ${ full_account } ${ emoji('pepehands') }`)
     })
 }
 

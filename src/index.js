@@ -7,7 +7,8 @@ const { setActivity } = require('./utils')
 const MATCHERS = [
   require('./match'),
   require('./github'),
-  require('./stats')
+  require('./stats'),
+  require('./music')
 ]
 
 global.last_recorded_sr = {}

@@ -11,5 +11,5 @@ exports.regex = REGEX
 
 exports.process = msg => {
   if (!msg.author.bot)
-    msg.reply(REPLY)
+    msg.channel.send(REPLY)
 }
