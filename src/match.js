@@ -1,7 +1,7 @@
 const stringSimilarity = require('string-similarity')
-const { MAPS_LIST, ACCOUNTS_LIST, PLAYERS_LIST, HEROES_LIST } = require('./constants')
+const { MAPS_LIST, ACCOUNTS_LIST, PLAYERS_LIST, HEROES_LIST, PATS, WIN_REACTIONS } = require('./constants')
 const { saveMatch } = require('./db')
-const { emoji } = require('./utils')
+const { emoji, pickRandom } = require('./utils')
 
 const
   MATCH_SUMMARY_REGEX = /^\*?\*?\((win|loss|draw)\) (.+)\*?\*?\n([\s\S]+)$/i,
@@ -30,7 +30,7 @@ exports.process = msg => {
       global.last_recorded_sr[p.account] = p.sr.end
 
   saveMatch(match)
-  .then(msg.react(emoji(match.result === 'W' ? 'mmyea' : match.result === 'L' ? 'feelssadman' : 'zzz~1')))
+  .then(_ => msg.react(match_reaction(match)))
 }
 
 const parse_map = t => {
@@ -91,4 +91,23 @@ const parse_players = (t, result) => {
       heroes: parse_heroes(data)
     }
   })
+}
+
+const match_reaction = match => {
+  let e
+  if (match.result === 'L')
+    e = 'feelssadman'
+  if (match.result === 'D')
+    e = 'zzz~1'
+  if (match.result === 'W') {
+    let all_heroes_played = match.players.reduce((all, p) => [...all, ...p.heroes], []),
+        pattable_heroes = Object.keys(PATS)
+    all_heroes_played = Array.from(new Set(all_heroes_played))
+    let pattable_heroes_played = all_heroes_played.filter(h => pattable_heroes.includes(h))
+    if (pattable_heroes_played.length)
+      e = PATS[pickRandom(pattable_heroes_played)]
+    else
+      e = pickRandom(WIN_REACTIONS)
+  }
+  return emoji(e)
 }

@@ -124,10 +124,29 @@ exports.EMOJIS = {
   rager: '555849538695331861',
   feelssadman: '560563582144741388',
   mmyea: '560563647529877544',
-  'zzz~1': '498163652889804831'
+  'zzz~1': '498163652889804831',
+  patwidow: '576068002215362561',
+  patsombra: '576068035576725514',
+  patpharah: '576082671218851841',
+  patmercy: '576068114249285652',
+  patgenji: '576084695305945095',
+  patbrigitte: '576068065641627669',
+  patana: '576067950495268885'
+}
+
+exports.PATS = {
+  Widowmaker: 'patwidow',
+  Sombra: 'patsombra',
+  Pharah: 'patpharah',
+  Mercy: 'patmercy',
+  Genji: 'patgenji',
+  Brigitte: 'patbrigitte',
+  Ana: 'patana'
 }
 
 exports.USER_IDS = {
   cactus: '421125233970380810',
   anu: '113794572236226563'
 }
+
+exports.WIN_REACTIONS = ['ole', 'mmyea']
