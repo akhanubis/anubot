@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const { DISCORD_TOKEN, ACTIVITY_REFRESH_INTERVAL_IN_S } = require('./env')
+const { DISCORD_TOKEN, ACTIVITY_REFRESH_INTERVAL_IN_S, ALLOWED_SERVER } = require('./env')
 const { initAWS } = require('./startup')
 const { populateLastSr } = require('./db')
 const { setActivity } = require('./utils')
@@ -24,6 +24,8 @@ const m = async _ => {
     setActivity()
   })
   global.client.on('message', msg => {
+    if (msg.channel.guild.id !== ALLOWED_SERVER)
+      return
     for (let m of MATCHERS)
       if (msg.content.match(m.regex)) {
         console.log(`Processing message with ${ m.name }`)
