@@ -53,7 +53,7 @@ const parse_sr = (account, data, result) => {
   if (sr_data) {
     start_sr = parseInt(sr_data[2]) || undefined
     end_sr = parseInt(sr_data[3]) || undefined
-    /* assume last recorded sr is prev sr */
+    /* assume last recorded sr is prev sr if it's in between a common sense range */
     let last_sr = last_recorded_sr[account]
     if (last_sr && ((result === 'W' && last_sr < end_sr - 10 && last_sr >= end_sr - 30) || (result === 'L' && last_sr > end_sr + 10 && last_sr <= end_sr + 30) || (result === 'D' && last_sr === end_sr)))
       start_sr = last_sr
