@@ -39,7 +39,7 @@ exports.formatMatch = match => {
         let diff = p.sr.start && p.sr.end ? `${ loss(match) ? '-' : '+' }${ Math.abs(p.sr.end - p.sr.start) }` : '??'
         return `${ i + 1 }. **${ diff }** (${ p.sr.start ? p.sr.start : '????' }-${ p.sr.end ? p.sr.end : '????' })`
       }).join("\n"),
-      players_data = match.players.map((p, i) => `${ i + 1}. **${ p.account }**: ${ [p.sr.end, ...p.heroes].filter(a => a).join(', ') }`).join("\n")
+      players_data = match.players.map((p, i) => `${ i + 1}. **${ p.account.toUpperCase() }**: ${ [p.sr.end, ...p.heroes].filter(a => a).join(', ') }`).join("\n")
       
   return REPLY
     .replace('%RESULT%', humanizedResult(match).toUpperCase())
