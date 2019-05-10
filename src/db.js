@@ -1,5 +1,5 @@
 const { ACCOUNTS_LIST } = require('./constants')
-const { BEANSTALK, MATCHES_TABLE } = require('./env')
+const { BEANSTALK, MATCHES_TABLE, MATCHES_TABLE_MESSAGE_ID_INDEX } = require('./env')
 
 exports.saveMatch = match => {
   let match_common_data = { ...match, players: undefined },
@@ -13,13 +13,6 @@ exports.saveMatch = match => {
   return Promise.all(promises)
   .then(_ => console.log(`${ match.map } saved`))
 }
-
-/* dont save in dev */
-if (!BEANSTALK)
-  exports.saveMatch = match => {
-    console.log(`[Dev] Storing ${ match.map }`)
-    return Promise.resolve()
-  }
 
 exports.populateLastSr = last_sr => {
   console.log('Fetching initial latest SR data...')
@@ -59,4 +52,28 @@ exports.matchesByAccount = async acc => {
       break
   }
   return out
+}
+
+exports.deleteMatchByMessageId = id => {
+  return global.db.query({
+    TableName: MATCHES_TABLE,
+    IndexName: MATCHES_TABLE_MESSAGE_ID_INDEX,
+    KeyConditionExpression: 'message_id = :m',
+    ExpressionAttributeValues: { ':m': id }
+  }).promise()
+  .then(result => {
+    return Promise.all(result.Items.map(entry => global.db.delete({
+      TableName: MATCHES_TABLE,
+      Key: {
+        account: entry.account,
+        timestamp: entry.timestamp
+      }
+    }).promise()))
+  })
+}
+
+if (!BEANSTALK) {
+  let mock = require('./db_dev')
+  for (let m in mock)
+    exports[m] = mock[m]
 }

@@ -1,5 +1,11 @@
 /* TODO: store this in a Dynamo metadata table */
 
+exports.WAIT_BEFORE_DESTROY_IN_S = 10
+
+exports.ERROR_EMOJI = '💣'
+
+exports.SUCCESS_EMOJI = '👌'
+
 exports.MAPS_LIST = {
   'hanamura': 'Hanamura',
   'horizon': 'Horizon Lunar Colony',

@@ -2,13 +2,15 @@ const Discord = require('discord.js')
 const { DISCORD_TOKEN, ACTIVITY_REFRESH_INTERVAL_IN_S, ALLOWED_SERVER } = require('./env')
 const { initAWS } = require('./startup')
 const { populateLastSr } = require('./db')
-const { setActivity } = require('./utils')
+const { setActivity, emoji } = require('./utils')
+const { ERROR_EMOJI, SUCCESS_EMOJI } = require('./constants')
 
 const MATCHERS = [
   require('./match'),
   require('./github'),
   require('./stats'),
-  require('./music')
+  require('./music'),
+  require('./matchDelete')
 ]
 
 global.last_recorded_sr = {}
@@ -23,18 +25,20 @@ const m = async _ => {
     setInterval(setActivity, ACTIVITY_REFRESH_INTERVAL_IN_S * 1000)
     setActivity()
   })
-  global.client.on('message', msg => {
+  global.client.on('message', async msg => {
     if (msg.channel.guild.id !== ALLOWED_SERVER || msg.author.bot)
       return
     for (let m of MATCHERS)
       if (msg.content.match(m.regex)) {
         console.log(`Processing message with ${ m.name }`)
         try {
-          m.process(msg)
+          await m.process(msg)
+          msg.react(emoji(SUCCESS_EMOJI))
         }
         catch(e) {
           console.log('Error processing message')
           console.log(e)
+          msg.react(emoji(ERROR_EMOJI))
         }
       }
   })

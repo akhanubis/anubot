@@ -1,4 +1,4 @@
-const { ACTIVITIES, EMOJIS } = require('./constants')
+const { ACTIVITIES, EMOJIS, WAIT_BEFORE_DESTROY_IN_S } = require('./constants')
 
 exports.pickRandom = arr => arr[Math.floor(Math.random() * arr.length)]
 
@@ -15,3 +15,5 @@ exports.loss = m => m.result === 'L'
 exports.draw = m => m.result === 'D'
 
 exports.humanizedResult = m => exports.win(m) ? 'win' : exports.draw(m) ? 'draw' : 'loss'
+
+exports.delayedDelete = m => setTimeout(() => m.delete(), WAIT_BEFORE_DESTROY_IN_S * 1000)

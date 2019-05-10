@@ -1,7 +1,7 @@
 const stringSimilarity = require('string-similarity')
 const { MAPS_LIST, ACCOUNTS_LIST, PLAYERS_LIST, HEROES_LIST, PATS, WIN_REACTIONS, RESULT_EMOJIS } = require('./constants')
 const { saveMatch } = require('./db')
-const { emoji, pickRandom, loss, draw, humanizedResult } = require('./utils')
+const { emoji, pickRandom, loss, draw, humanizedResult, delayedDelete } = require('./utils')
 
 const
   MATCH_SUMMARY_REGEX = /^\*?\*?\((win|loss|draw)\) (.+)\*?\*?\n([\s\S]+)$/i,
@@ -16,7 +16,6 @@ const
 **SR CHANGES %RESULT_EMOJI_2%**
 %SR_CHANGE_DATA%
 `
-
 
 exports.name = NAME
 
@@ -38,10 +37,12 @@ exports.process = msg => {
     if (p.sr)
       global.last_recorded_sr[p.account] = p.sr.end
 
-  saveMatch(match)
-  .then(_ => {
-    reply_to_match(msg, match).then(new_msg => react_to_match(new_msg, match))
-    msg.delete()
+  reply_to_match(msg, match).then(new_msg => {
+    match.message_id = new_msg.id
+    saveMatch(match)
+    append_id(new_msg)
+    react_to_match(new_msg, match)
+    delayedDelete(msg)
   })
 }
 
@@ -150,4 +151,8 @@ const reply_to_match = (msg, match) => {
     .replace('%NOTES%', notes)
     .replace(/\%EMPTY_LINE\%\n/g, '')
   )
+}
+
+const append_id = msg => {
+  msg.edit(`${ msg.content }\n\nRef #${ msg.id }`)
 }
