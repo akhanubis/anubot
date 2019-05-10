@@ -10,7 +10,8 @@ const MATCHERS = [
   require('./github'),
   require('./stats'),
   require('./music'),
-  require('./matchDelete')
+  require('./matchDelete'),
+  require('./matchReplace')
 ]
 
 global.last_recorded_sr = {}

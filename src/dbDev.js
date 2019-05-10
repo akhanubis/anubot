@@ -10,5 +10,5 @@ exports.populateLastSr = _ => {
 
 exports.deleteMatchByMessageId = id => {
   console.log(`[Dev] Deleting match by message id ${ id }`)
-  return Promise.resolve()
+  return Promise.resolve([{ timestamp: new Date().toISOString() }])
 }

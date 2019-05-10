@@ -54,26 +54,27 @@ exports.matchesByAccount = async acc => {
   return out
 }
 
-exports.deleteMatchByMessageId = id => {
-  return global.db.query({
+exports.deleteMatchByMessageId = async id => {
+  let existing = (await global.db.query({
     TableName: MATCHES_TABLE,
     IndexName: MATCHES_TABLE_MESSAGE_ID_INDEX,
     KeyConditionExpression: 'message_id = :m',
     ExpressionAttributeValues: { ':m': id }
-  }).promise()
-  .then(result => {
-    return Promise.all(result.Items.map(entry => global.db.delete({
+  }).promise()).Items
+  if (!existing.length)
+    throw('No match found')
+  await Promise.all(existing.map(entry => global.db.delete({
       TableName: MATCHES_TABLE,
       Key: {
         account: entry.account,
         timestamp: entry.timestamp
       }
     }).promise()))
-  })
+  return existing
 }
 
 if (!BEANSTALK) {
-  let mock = require('./db_dev')
+  let mock = require('./dbDev')
   for (let m in mock)
     exports[m] = mock[m]
 }
