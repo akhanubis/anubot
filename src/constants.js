@@ -159,7 +159,7 @@ exports.USER_IDS = {
 exports.WIN_REACTIONS = ['ole', 'mmyea']
 
 exports.RESULT_EMOJIS = {
-  W: [':peach:', ':pill:', ':avocado:', ':four_leaf_clover:'],
-  L: [':pensive:', ':tired_face:'],
-  D: [':sweat_smile:', ':disappointed_relieved:']
+  W: [':peach:', ':v:', ':cherries:', ':lemon:', ':strawberry:', ':medal:', ':four_leaf_clover:', ':dart:', ':love_letter:', ':avocado:', ':sunflower:', ':fire:', ':blush:', ':stuck_out_tongue:', ':beach_umbrella:'],
+  L: [':head_bandage:', ':speak_no_evil:', ':chicken:', ':boom:', ':wilted_rose:', ':8ball:', ':space_invader:', ':game_die:', ':knife:', ':crossed_swords:', ':skull_crossbones:', ':pill:', ':syringe:'],
+  D: [':peach:', ':v:', ':cherries:', ':lemon:', ':strawberry:', ':medal:', ':four_leaf_clover:', ':dart:', ':love_letter:', ':avocado:', ':sunflower:', ':fire:', ':blush:', ':stuck_out_tongue:', ':beach_umbrella:', ':head_bandage:', ':speak_no_evil:', ':chicken:', ':boom:', ':wilted_rose:', ':8ball:', ':space_invader:', ':game_die:', ':knife:', ':crossed_swords:', ':skull_crossbones:', ':pill:', ':syringe:']
 }
