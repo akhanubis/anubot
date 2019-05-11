@@ -3,19 +3,20 @@ const
   NAME = 'Help',
   REPLY = `
 **COMMANDS**
-__!stats an_account__
+__!stats an-account__
 *Shows stats for the given account*
 \`\`\`
 !stats krusher99
 \`\`\`
-__!deletematch #a_match_id__
-*Removes the given match from the match history*
+__!deletematch #a-match-id__
+*Removes the given match from the match history and removes the discord message related to that match*
 \`\`\`
 !deletematch #5
 \`\`\`
-__!replacematch #a_match_id
-%MATCH_SUMMARY%__
-*Multiline command. Replaces old match data with new data for the given match. See create match trigger for information in %MATCH_SUMMARY% format*
+__!replacematch #a-match-id
+%MATCH-SUMMARY%__
+*Multiline command. Replaces old match data with new data for the given match and updates the related discord message accordingly.
+See create match trigger for information in %MATCH-SUMMARY% format*
 \`\`\`
 !replacematch #5
 (win) paris
@@ -23,7 +24,7 @@ krusher99: 3200-3225, ana, mercy
 420bootywizard: 2750-2774, genji, pharah
 notes: ez combos for an ez win
 \`\`\`
-__!constant a_constant__
+__!constant a-constant__
 *Returns all the possible values for the constant provided.
 'a_constant' must be one of (heroes, maps).*
 \`\`\`
@@ -42,7 +43,7 @@ another_account: start_sr-end_sr, hero_1, hero_2, hero_3
 yet_another_account: start_sr-end_sr, hero_1, hero_2, hero_3
 notes: description of the match
 \`\`\`
-*Creates a new entry in the match history based on the information given.
+*Creates a new entry in the match history based on the information given and then posts the newly created match data.
 'result' must be one of (win, loss, draw).
 'start_sr-' is optional.
 '-end_sr' is optional.
