@@ -1,8 +1,8 @@
 const { ACCOUNTS_LIST } = require('./constants')
-const { BEANSTALK, MATCHES_TABLE, MATCHES_TABLE_MESSAGE_ID_INDEX } = require('./env')
+const { BEANSTALK, MATCHES_TABLE, MATCHES_TABLE_MATCH_ID_INDEX } = require('./env')
 
-exports.saveMatch = match => {
-  let match_common_data = { ...match, players: undefined },
+exports.saveMatch = async (match, overriden_id) => {
+  let match_common_data = { ...match, match_id: parseInt(overriden_id || next_id()), players: undefined },
       promises = match.players.map(p => global.db.put({
         TableName: MATCHES_TABLE,
         Item: {
@@ -10,8 +10,9 @@ exports.saveMatch = match => {
           ...p
         }
       }).promise())
-  return Promise.all(promises)
-  .then(_ => console.log(`${ match.map } saved`))
+  await Promise.all(promises)
+  console.log(`${ match_common_data.match_id }-${ match.map } saved`)
+  return match_common_data.match_id
 }
 
 exports.populateLastSr = last_sr => {
@@ -54,12 +55,12 @@ exports.matchesByAccount = async acc => {
   return out
 }
 
-exports.deleteMatchByMessageId = async id => {
+exports.deleteMatchById = async id => {
   let existing = (await global.db.query({
     TableName: MATCHES_TABLE,
-    IndexName: MATCHES_TABLE_MESSAGE_ID_INDEX,
-    KeyConditionExpression: 'message_id = :m',
-    ExpressionAttributeValues: { ':m': id }
+    IndexName: MATCHES_TABLE_MATCH_ID_INDEX,
+    KeyConditionExpression: 'match_id = :m',
+    ExpressionAttributeValues: { ':m': parseInt(id) }
   }).promise()).Items
   if (!existing.length)
     throw('No match found')
@@ -72,6 +73,23 @@ exports.deleteMatchByMessageId = async id => {
     }).promise()))
   return existing
 }
+
+exports.populateLastId = async _ => {
+  console.log('Fetching initial latest match_id...')
+  let promises = Object.values(ACCOUNTS_LIST).map(acc => global.db.query({
+    TableName: MATCHES_TABLE,
+    KeyConditionExpression: 'account = :a',
+    ExpressionAttributeValues: { ':a': acc },
+    Limit: 1,
+    ScanIndexForward: false,
+    ProjectionExpression: 'match_id'
+  }).promise())
+  let responses = await Promise.all(promises)
+  console.log(responses.map(r => (r.Items[0] || {}).match_id))
+  global.last_id = Math.max.apply(this, responses.map(r => (r.Items[0] || {}).match_id || 0))
+}
+
+const next_id = _ => ++global.last_id
 
 if (!BEANSTALK) {
   let mock = require('./dbDev')

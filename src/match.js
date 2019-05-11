@@ -17,8 +17,7 @@ exports.process = msg => {
 
   reply_to_match(msg, match).then(new_msg => {
     match.message_id = new_msg.id
-    saveMatch(match)
-    matchAppendId(new_msg)
+    saveMatch(match).then(id => matchAppendId(new_msg, id))
     delayedDelete(msg)
   })
 }

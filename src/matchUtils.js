@@ -52,7 +52,7 @@ exports.formatMatch = match => {
     .replace(/\%EMPTY_LINE\%\n/g, '')
 }
 
-exports.matchAppendId = msg => msg.edit(`${ msg.content }\nref #${ msg.id }`)
+exports.matchAppendId = (msg, match_id) => msg.edit(`${ msg.content }\nref #${ match_id }`)
 
 const parse_map = t => {
   let possible_map = stringSimilarity.findBestMatch(t.trim().toLowerCase(), Object.keys(MAPS_LIST))
