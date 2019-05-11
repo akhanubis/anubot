@@ -6,13 +6,14 @@ const { setActivity, emoji } = require('./utils')
 const { ERROR_EMOJI, SUCCESS_EMOJI } = require('./constants')
 
 const MATCHERS = [
-  require('./match'),
-  require('./github'),
-  require('./stats'),
-  require('./music'),
-  require('./matchDelete'),
-  require('./matchReplace')
-]
+  'match',
+  'github',
+  'stats',
+  'music',
+  'matchDelete',
+  'matchReplace',
+  'help'
+].map(f => require(`./matchers/${ f }`))
 
 global.last_recorded_sr = {}
 global.client = new Discord.Client()

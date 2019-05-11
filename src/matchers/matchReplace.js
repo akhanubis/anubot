@@ -1,6 +1,6 @@
-const { deleteMatchById, saveMatch } = require('./db')
-const { delayedDelete } = require('./utils')
-const { parseMatch, formatMatch, matchAppendId } = require('./matchUtils')
+const { deleteMatchById, saveMatch } = require('../db')
+const { delayedDelete } = require('../utils')
+const { parseMatch, formatMatch, matchAppendId } = require('../matchUtils')
 
 const
   REGEX = /^!replacematch\s+\#(\d+)\n([\s\S]+)$/i,

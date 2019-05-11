@@ -1,5 +1,5 @@
 const moment = require('moment')
-const { pickRandom } = require('./utils')
+const { pickRandom } = require('../utils')
 
 
 const

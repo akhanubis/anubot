@@ -90,11 +90,11 @@ const parse_sr = (account, data, result) => {
   }
 }
 
-const parse_heroes = data => data.split(',').map(d => {
+const parse_heroes = data => Array.from(new Set(data.split(',').map(d => {
   let possible_hero = stringSimilarity.findBestMatch(d.trim().toLowerCase(), Object.keys(HEROES_LIST))
   if (possible_hero.bestMatch.rating >= 0.8)
     return HEROES_LIST[possible_hero.bestMatch.target]
-}).filter(d => d)
+}).filter(d => d)))
 
 const parse_account = acc_text => {
   let possible_account = stringSimilarity.findBestMatch(acc_text, Object.keys(ACCOUNTS_LIST))

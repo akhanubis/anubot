@@ -1,6 +1,6 @@
-const { saveMatch } = require('./db')
-const { delayedDelete } = require('./utils')
-const { parseMatch, formatMatch, matchAppendId, MATCH_SUMMARY_REGEX } = require('./matchUtils')
+const { saveMatch } = require('../db')
+const { delayedDelete } = require('../utils')
+const { parseMatch, formatMatch, matchAppendId, MATCH_SUMMARY_REGEX } = require('../matchUtils')
 
 const
   NAME = 'Match'

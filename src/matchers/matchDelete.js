@@ -1,5 +1,5 @@
-const { deleteMatchById } = require('./db')
-const { delayedDelete } = require('./utils')
+const { deleteMatchById } = require('../db')
+const { delayedDelete } = require('../utils')
 
 const
   REGEX = /^!deletematch\s+\#(\d+)/i,

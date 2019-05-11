@@ -1,4 +1,4 @@
-const { GITHUB_REPOSITORY } = require('./env')
+const { GITHUB_REPOSITORY } = require('../env')
 
 const
   REGEX = /^\!repo/i,

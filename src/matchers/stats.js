@@ -1,6 +1,6 @@
-const { ACCOUNTS_LIST } = require('./constants')
-const { matchesByAccount } = require('./db')
-const { emoji, percentage } = require('./utils')
+const { ACCOUNTS_LIST } = require('../constants')
+const { matchesByAccount } = require('../db')
+const { emoji, percentage } = require('../utils')
 
 const
   REGEX = /^\!stats ([\S]+)/i,
