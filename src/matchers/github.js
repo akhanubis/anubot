@@ -9,7 +9,4 @@ exports.name = NAME
 
 exports.regex = REGEX
 
-exports.process = msg => {
-  if (!msg.author.bot)
-    msg.channel.send(REPLY)
-}
+exports.process = msg => msg.channel.send(REPLY)

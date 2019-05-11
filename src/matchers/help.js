@@ -3,18 +3,18 @@ const
   NAME = 'Help',
   REPLY = `
 **COMMANDS**
-!stats an_account
+__!stats an_account__
 *Shows stats for the given account*
 \`\`\`
 !stats krusher99
 \`\`\`
-!deletematch #a_match_id
+__!deletematch #a_match_id__
 *Removes the given match from the match history*
 \`\`\`
 !deletematch #5
 \`\`\`
-!replacematch #a_match_id
-%MATCH_SUMMARY%
+__!replacematch #a_match_id
+%MATCH_SUMMARY%__
 *Multiline command. Replaces old match data with new data for the given match. See create match trigger for information in %MATCH_SUMMARY% format*
 \`\`\`
 !replacematch #5
@@ -23,7 +23,13 @@ krusher99: 3200-3225, ana, mercy
 420bootywizard: 2750-2774, genji, pharah
 notes: ez combos for an ez win
 \`\`\`
-!repo
+__!constant a_constant__
+*Returns all the possible values for the constant provided.
+'a_constant' must be one of (heroes, maps).*
+\`\`\`
+!constant heroes
+\`\`\`
+__!repo__
 *Returns a link to the git repository where the bot code resides*
 \`\`\`
 !repo
@@ -54,7 +60,4 @@ exports.name = NAME
 
 exports.regex = REGEX
 
-exports.process = msg => {
-  if (!msg.author.bot)
-    msg.channel.send(REPLY)
-}
+exports.process = msg => msg.channel.send(REPLY)

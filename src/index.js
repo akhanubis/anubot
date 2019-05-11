@@ -12,7 +12,8 @@ const MATCHERS = [
   'music',
   'matchDelete',
   'matchReplace',
-  'help'
+  'help',
+  'constant'
 ].map(f => require(`./matchers/${ f }`))
 
 global.last_recorded_sr = {}
