@@ -1,6 +1,6 @@
 const { deleteMatchByMessageId, saveMatch } = require('./db')
 const { delayedDelete } = require('./utils')
-const { parseMatch, formatMatch, reactToMatch, matchAppendId } = require('./matchUtils')
+const { parseMatch, formatMatch, matchAppendId } = require('./matchUtils')
 
 const
   REGEX = /^!replacematch\s+\#(\d+)\n([\s\S]+)$/i,
@@ -23,13 +23,9 @@ exports.process = msg => {
   .then(deleted_entries => {
     new_match.timestamp = deleted_entries[0].timestamp
     msg.channel.fetchMessage(message_id)
-    .then(old_msg => {
-      old_msg.edit(formatMatch(new_match)).then(_ => matchAppendId(old_msg))
-      remove_old_reactions(old_msg).then(_ => reactToMatch(old_msg, new_match))
-    })
+    .then(old_msg => old_msg.edit(formatMatch(new_match)))
+    .then(_ => matchAppendId(old_msg))
     saveMatch(new_match)
     delayedDelete(msg)
   })
 }
-
-const remove_old_reactions = msg => Promise.all(msg.reactions.filter(r => r.me).map(r => r.remove()))

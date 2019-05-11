@@ -125,22 +125,6 @@ exports.ACTIVITIES = [
   ['a happy song', { type: 'PLAYING' }]
 ]
 
-exports.EMOJIS = {
-  ole: '548558440822472714',
-  'unamused~1': '498163653275680778',
-  rager: '555849538695331861',
-  feelssadman: '560563582144741388',
-  mmyea: '560563647529877544',
-  'zzz~1': '498163652889804831',
-  patwidow: '576068002215362561',
-  patsombra: '576068035576725514',
-  patpharah: '576082671218851841',
-  patmercy: '576068114249285652',
-  patgenji: '576084695305945095',
-  patbrigitte: '576068065641627669',
-  patana: '576067950495268885'
-}
-
 exports.PATS = {
   Widowmaker: 'patwidow',
   Sombra: 'patsombra',
@@ -156,7 +140,11 @@ exports.USER_IDS = {
   anu: '113794572236226563'
 }
 
-exports.WIN_REACTIONS = ['ole', 'mmyea']
+exports.MAIN_EMOJIS = {
+  W: ['ole', 'mmyea'],
+  L: ['feelssadman', 'rager'],
+  D: ['zzz~1', 'unamused~1']
+}
 
 exports.RESULT_EMOJIS = {
   W: [':peach:', ':v:', ':cherries:', ':lemon:', ':strawberry:', ':medal:', ':four_leaf_clover:', ':dart:', ':love_letter:', ':avocado:', ':sunflower:', ':fire:', ':stuck_out_tongue:', ':beach_umbrella:'],

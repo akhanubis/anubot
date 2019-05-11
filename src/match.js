@@ -1,6 +1,6 @@
 const { saveMatch } = require('./db')
 const { delayedDelete } = require('./utils')
-const { parseMatch, formatMatch, reactToMatch, matchAppendId, MATCH_SUMMARY_REGEX } = require('./matchUtils')
+const { parseMatch, formatMatch, matchAppendId, MATCH_SUMMARY_REGEX } = require('./matchUtils')
 
 const
   NAME = 'Match'
@@ -19,7 +19,6 @@ exports.process = msg => {
     match.message_id = new_msg.id
     saveMatch(match)
     matchAppendId(new_msg)
-    reactToMatch(new_msg, match)
     delayedDelete(msg)
   })
 }

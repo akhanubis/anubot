@@ -1,5 +1,5 @@
 const stringSimilarity = require('string-similarity')
-const { MAPS_LIST, ACCOUNTS_LIST, PLAYERS_LIST, HEROES_LIST, RESULT_EMOJIS, PATS, WIN_REACTIONS } = require('./constants')
+const { MAPS_LIST, ACCOUNTS_LIST, PLAYERS_LIST, HEROES_LIST, RESULT_EMOJIS, PATS, MAIN_EMOJIS } = require('./constants')
 const { emoji, pickRandom, loss, draw, humanizedResult } = require('./utils')
 
 const
@@ -8,10 +8,10 @@ const
   ACCOUNT_REGEX = /(\d\. )?([a-z0-9]+)\:(.+)$/i,
   SR_REGEX = /((\d{4})-)?(\d{4})/,
   REPLY = `
-**(%RESULT%) %MAP% %RESULT_EMOJI%**
+**(%RESULT%) %MAP% %MAIN_EMOJI%**
 %PLAYERS_DATA%
 %NOTES%
-**SR CHANGES %RESULT_EMOJI_2%**
+**SR CHANGES %RESULT_EMOJI%**
 %SR_CHANGE_DATA%
 `
 
@@ -32,8 +32,8 @@ exports.parseMatch = msg => {
 }
 
 exports.formatMatch = match => {
-  let r_emoji = pickRandom(RESULT_EMOJIS[match.result]),
-      r_emoji_2 = pickRandom(RESULT_EMOJIS[match.result].filter(e => e !== r_emoji)),
+  let m_emoji = main_emoji(match),
+      r_emoji = pickRandom(RESULT_EMOJIS[match.result]),
       notes = match.notes ? `*NOTES: ${ match.notes }` : '%EMPTY_LINE%',
       sr_data = match.players.map((p, i) => {
         let diff = p.sr.start && p.sr.end ? `${ loss(match) ? '-' : '+' }${ Math.abs(p.sr.end - p.sr.start) }` : '??'
@@ -44,31 +44,12 @@ exports.formatMatch = match => {
   return REPLY
     .replace('%RESULT%', humanizedResult(match).toUpperCase())
     .replace('%MAP%', match.map.toUpperCase())
+    .replace('%MAIN_EMOJI%', emoji(m_emoji))
     .replace('%RESULT_EMOJI%', emoji(r_emoji))
-    .replace('%RESULT_EMOJI_2%', emoji(r_emoji_2))
     .replace('%SR_CHANGE_DATA%', sr_data)
     .replace('%PLAYERS_DATA%', players_data)
     .replace('%NOTES%', notes)
     .replace(/\%EMPTY_LINE\%\n/g, '')
-}
-
-exports.reactToMatch = (msg, match) => {
-  let e
-  if (loss(match))
-    e = 'feelssadman'
-  else if (draw(match))
-    e = 'zzz~1'
-  else {
-    let all_heroes_played = match.players.reduce((all, p) => [...all, ...p.heroes], []),
-        pattable_heroes = Object.keys(PATS)
-    all_heroes_played = Array.from(new Set(all_heroes_played))
-    let pattable_heroes_played = all_heroes_played.filter(h => pattable_heroes.includes(h))
-    if (pattable_heroes_played.length)
-      e = PATS[pickRandom(pattable_heroes_played)]
-    else
-      e = pickRandom(WIN_REACTIONS)
-  }
-  return msg.react(emoji(e))
 }
 
 exports.matchAppendId = msg => msg.edit(`${ msg.content }\nref #${ msg.id }`)
@@ -137,4 +118,21 @@ const parse_players = (t, result) => {
       heroes: parse_heroes(data)
     }
   })
+}
+
+const main_emoji = match => {
+  let possible_emojis = []
+  if (loss(match))
+    possible_emojis = MAIN_EMOJIS.L
+  else if (draw(match))
+    possible_emojis = MAIN_EMOJIS.D
+  else {
+    let all_heroes_played = match.players.reduce((all, p) => [...all, ...p.heroes], []),
+        pats = Array.from(new Set(all_heroes_played)).map(h => PATS[h]).filter(p => p)
+    if (pats.length)
+      possible_emojis = pats
+    else
+      possible_emojis = MAIN_EMOJIS.W
+  }
+  return emoji(pickRandom(possible_emojis))
 }
