@@ -34,12 +34,12 @@ exports.parseMatch = msg => {
 exports.formatMatch = match => {
   let r_emoji = pickRandom(RESULT_EMOJIS[match.result]),
       r_emoji_2 = pickRandom(RESULT_EMOJIS[match.result].filter(e => e !== r_emoji)),
-      notes = match.notes ? `***NOTES**: ${ match.notes }` : '%EMPTY_LINE%',
+      notes = match.notes ? `*NOTES: ${ match.notes }` : '%EMPTY_LINE%',
       sr_data = match.players.map((p, i) => {
         let diff = p.sr.start && p.sr.end ? `${ loss(match) ? '-' : '+' }${ Math.abs(p.sr.end - p.sr.start) }` : '??'
         return `${ i + 1 }. **${ diff }** (${ p.sr.start ? p.sr.start : '????' }-${ p.sr.end ? p.sr.end : '????' })`
       }).join("\n"),
-      players_data = match.players.map((p, i) => `${ i + 1}. **${ p.account.toUpperCase() }**: ${ [p.sr.end, ...p.heroes.map(a => a.toLowerCase())].filter(a => a).join(', ') }`).join("\n")
+      players_data = match.players.map((p, i) => `${ i + 1}. ${ p.account.toUpperCase() }: ${ [p.sr.end, ...p.heroes.map(a => a.toLowerCase())].filter(a => a).join(', ') }`).join("\n")
       
   return REPLY
     .replace('%RESULT%', humanizedResult(match).toUpperCase())
@@ -71,7 +71,7 @@ exports.reactToMatch = (msg, match) => {
   return msg.react(emoji(e))
 }
 
-exports.matchAppendId = msg => msg.edit(`${ msg.content }\n\nRef #${ msg.id }`)
+exports.matchAppendId = msg => msg.edit(`${ msg.content }\nref #${ msg.id }`)
 
 const parse_map = t => {
   let possible_map = stringSimilarity.findBestMatch(t.trim().toLowerCase(), Object.keys(MAPS_LIST))
