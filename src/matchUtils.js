@@ -1,6 +1,6 @@
 const stringSimilarity = require('string-similarity')
 const { MAPS_LIST, ACCOUNTS_LIST, PLAYERS_LIST, HEROES_LIST, RESULT_EMOJIS, PATS, MAIN_EMOJIS } = require('./constants')
-const { emoji, pickRandom, loss, draw, humanizedResult } = require('./utils')
+const { emoji, pickRandom, loss, draw, humanizedResult, replaceText } = require('./utils')
 
 const
   MATCH_SUMMARY_REGEX = /^\*?\*?\((win|loss|draw)\) (.+)\*?\*?\n([\s\S]+)$/i,
@@ -41,21 +41,21 @@ exports.formatMatch = match => {
       }).join("\n"),
       players_data = match.players.map((p, i) => `${ i + 1}. ${ p.account.toUpperCase() }: ${ [p.sr.end, ...p.heroes.map(a => a.toLowerCase())].filter(a => a).join(', ') }`).join("\n")
       
-  return REPLY
-    .replace('%RESULT%', humanizedResult(match).toUpperCase())
-    .replace('%MAP%', match.map.toUpperCase())
-    .replace('%MAIN_EMOJI%', emoji(m_emoji))
-    .replace('%RESULT_EMOJI%', emoji(r_emoji))
-    .replace('%SR_CHANGE_DATA%', sr_data)
-    .replace('%PLAYERS_DATA%', players_data)
-    .replace('%NOTES%', notes)
-    .replace(/\%EMPTY_LINE\%\n/g, '')
+  return replaceText(REPLY, {
+    RESULT: humanizedResult(match).toUpperCase(),
+    MAP: match.map.toUpperCase(),
+    MAIN_EMOJI: emoji(m_emoji),
+    RESULT_EMOJI: emoji(r_emoji),
+    SR_CHANGE_DATA: sr_data,
+    PLAYERS_DATA: players_data,
+    NOTES: notes
+  }).replace(/\%EMPTY_LINE\%\n/g, '')
 }
 
 exports.matchAppendId = (msg, match_id) => msg.edit(`${ msg.content }\nref #${ match_id }`)
 
 const parse_map = t => {
-  let possible_map = stringSimilarity.findBestMatch(t.replace(/\:[^:]+\:/, '').trim().toLowerCase(), Object.keys(MAPS_LIST))
+  let possible_map = stringSimilarity.findBestMatch(t.replace(/\:[^:]+\:/ /* remove old emoji when copy pasting */, '').trim().toLowerCase(), Object.keys(MAPS_LIST))
   if (possible_map.bestMatch.rating < 0.8)
     throw(`No map found for ${ t }`)
   return MAPS_LIST[possible_map.bestMatch.target]

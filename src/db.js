@@ -36,14 +36,19 @@ exports.populateLastSr = last_sr => {
   })
 }
 
-exports.matchesByAccount = async acc => {
+exports.matchesByAccount = async (acc, since) => {
   let last_evaluated_key,
       out = [],
       params = {
         TableName: MATCHES_TABLE,
-        KeyConditionExpression: 'account = :a',
+        KeyConditionExpression: `account = :a`,
         ExpressionAttributeValues: { ':a': acc }
       }
+  if (since) {
+    params.KeyConditionExpression += ' AND #timestamp >= :t'
+    params.ExpressionAttributeValues[':t'] = since
+    params.ExpressionAttributeNames = { '#timestamp': 'timestamp' }
+  }
   while(true) {
     params.ExclusiveStartKey = last_evaluated_key
     data = await global.db.query(params).promise()

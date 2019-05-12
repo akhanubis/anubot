@@ -1,12 +1,12 @@
-const { ACCOUNTS_LIST } = require('../constants')
+const { ACCOUNTS_LIST, DAY_TO_MS } = require('../constants')
 const { matchesByAccount } = require('../db')
-const { emoji, percentage } = require('../utils')
+const { emoji, percentage, replaceText } = require('../utils')
 
 const
-  REGEX = /^\!stats ([\S]+)/i,
+  REGEX = /^\!stats ([\S]+)(\s+\d+d)?/i,
   NAME = 'Stats',
   REPLY = `\`\`\`
-  All time stats for %ACCOUNT%
+  %TIME_WINDOW% stats for %ACCOUNT%
   ----------------------------
 
   Win Rate (draw as loss): %WR_DRAW%%\n
@@ -22,20 +22,37 @@ exports.name = NAME
 exports.regex = REGEX
 
 exports.process = msg => {
-  let [_, acc] = msg.content.match(REGEX),
+  let [_, acc, days] = msg.content.match(REGEX),
       full_account = ACCOUNTS_LIST[acc.toLowerCase()]
   if (!full_account)
-    msg.reply(`Who the fuck is ${ acc }? ${ emoji('dinking') }`)
-  else
-    matchesByAccount(full_account)
+    msg.channel.send(`Who the fuck is ${ acc }? ${ emoji('dinking') }`)
+  else {
+    let start_timestamp = null
+    if (days) {
+      days = parseInt(days)
+      start_timestamp = new Date(new Date().getTime() - days * DAY_TO_MS).toISOString()
+    }
+    matchesByAccount(full_account, start_timestamp)
     .then(matches => {
       if (matches.length) {
-        let s_data = stats(matches)
-        msg.channel.send(REPLY.replace('%ACCOUNT%', full_account).replace('%WR_DRAW%', s_data.wr_draw).replace('%WR_NO_DRAW%', s_data.wr_no_draw).replace('%WINS%', s_data.wins).replace('%DRAWS%', s_data.draws).replace('%LOSSES%', s_data.losses))
+        let s_data = stats(matches),
+            humanized_time = days ? `Last ${ days } day${ days > 1 ? 's' : '' }`: 'All time',
+            replacements = {
+              TIME_WINDOW: humanized_time,
+              ACCOUNT: full_account,
+              WR_DRAW: s_data.wr_draw,
+              WR_NO_DRAW: s_data.wr_no_draw,
+              WINS: s_data.wins,
+              DRAWS: s_data.draws,
+              LOSSES: s_data.losses
+            },
+            content = replaceText(REPLY, replacements)
+        msg.channel.send(content)
       }
       else
         msg.channel.send(`No matches found for ${ full_account } ${ emoji('pepehands') }`)
     })
+  }
 }
 
 stats = matches => {

@@ -17,3 +17,5 @@ exports.draw = m => m.result === 'D'
 exports.humanizedResult = m => exports.win(m) ? 'win' : exports.draw(m) ? 'draw' : 'loss'
 
 exports.delayedDelete = m => setTimeout(() => m.delete(), WAIT_BEFORE_DESTROY_IN_S * 1000)
+
+exports.replaceText = (text, replacements) => Object.entries(replacements).reduce((replaced, [k, v]) => replaced.replace(`%${ k }%`, v), text)

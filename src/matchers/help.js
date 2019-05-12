@@ -3,10 +3,11 @@ const
   NAME = 'Help',
   REPLY = `
 **COMMANDS**
-__!stats an-account__
-*Shows stats for the given account*
+__!stats an-account Nd__
+*Shows stats for the given account for the last N days.
+'Nd' is optional*
 \`\`\`
-!stats krusher99
+!stats krusher99 7d
 \`\`\`
 __!deletematch #a-match-id__
 *Removes the given match from the match history and removes the discord message related to that match*

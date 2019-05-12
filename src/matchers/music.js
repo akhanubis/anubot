@@ -1,5 +1,5 @@
 const moment = require('moment')
-const { pickRandom } = require('../utils')
+const { pickRandom, replaceText } = require('../utils')
 
 
 const
@@ -25,7 +25,11 @@ exports.process = msg => {
         artist = ARTISTS.find(a => song.split(' ').map(b => b.toLowerCase()).includes(a))
     if (artist) {
       last_time_run = moment.utc()
-      msg.channel.send(pickRandom(REPLIES).replace(/\%ARTIST\%/g, artist).replace(/\%AUTHOR\%/g, msg.author.username))
+      let content = replaceText(pickRandom(REPLIES), {
+        ARTIST: artist,
+        AUTHOR: msg.author.username
+      })
+      msg.channel.send(content)
     }
   }
 }

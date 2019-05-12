@@ -2,6 +2,8 @@
 
 exports.WAIT_BEFORE_DESTROY_IN_S = 10
 
+exports.DAY_TO_MS = 86400000
+
 exports.ERROR_EMOJI = '💣'
 
 exports.SUCCESS_EMOJI = '👌'
