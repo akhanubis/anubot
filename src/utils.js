@@ -2,7 +2,7 @@ const { ACTIVITIES, WAIT_BEFORE_DESTROY_IN_S } = require('./constants')
 
 exports.pickRandom = arr => arr[Math.floor(Math.random() * arr.length)]
 
-exports.emoji = name => global.client.emojis.find(e => e.name === name) || name
+exports.emoji = name =>  global.client.emojis.get(name) || global.client.emojis.find(e => e.name === name) || name
 
 exports.setActivity = () => global.client.user.setActivity(...exports.pickRandom(ACTIVITIES))
 

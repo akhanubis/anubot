@@ -143,7 +143,7 @@ exports.USER_IDS = {
 exports.MAIN_EMOJIS = {
   W: ['ole', 'mmyea'],
   L: ['feelssadman', 'rager'],
-  D: ['zzz~1', 'unamused~1']
+  D: ['498163652889804831', '498163653275680778']
 }
 
 exports.RESULT_EMOJIS = {

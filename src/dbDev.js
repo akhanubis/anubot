@@ -1,5 +1,5 @@
 exports.saveMatch = async match => {
-  let id = await exports.nextId()
+  let id = ++global.last_id
   console.log(`[Dev] Storing ${ id }-${ match.map }`)
   return id
 }
