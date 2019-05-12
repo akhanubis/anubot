@@ -132,7 +132,9 @@ exports.PATS = {
   Mercy: 'patmercy',
   Genji: 'patgenji',
   Brigitte: 'patbrigitte',
-  Ana: 'patana'
+  Ana: 'patana',
+  Reinhardt: 'patrein',
+  Ashe: 'patashe'
 }
 
 exports.USER_IDS = {
@@ -142,7 +144,7 @@ exports.USER_IDS = {
 
 exports.MAIN_EMOJIS = {
   W: ['ole', 'mmyea'],
-  L: ['feelssadman', 'rager'],
+  L: ['feelssadman', 'rager', 'pepehands', 'pepegun', 'pepefreeze', 'monkaS'],
   D: ['498163652889804831', '498163653275680778']
 }
 
