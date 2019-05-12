@@ -55,7 +55,7 @@ exports.formatMatch = match => {
 exports.matchAppendId = (msg, match_id) => msg.edit(`${ msg.content }\nref #${ match_id }`)
 
 const parse_map = t => {
-  let possible_map = stringSimilarity.findBestMatch(t.trim().toLowerCase(), Object.keys(MAPS_LIST))
+  let possible_map = stringSimilarity.findBestMatch(t.replace(/\:[^:]+\:/, '').trim().toLowerCase(), Object.keys(MAPS_LIST))
   if (possible_map.bestMatch.rating < 0.8)
     throw(`No map found for ${ t }`)
   return MAPS_LIST[possible_map.bestMatch.target]
