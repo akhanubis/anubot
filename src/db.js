@@ -7,7 +7,8 @@ exports.saveMatch = async (match, overriden_id) => {
         TableName: MATCHES_TABLE,
         Item: {
           ...match_common_data,
-          ...p
+          ...p,
+          played_with: match.players.filter(p2 => p2 !== p).map(p2 => p2.account)
         }
       }).promise())
   await Promise.all(promises)
