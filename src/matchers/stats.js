@@ -6,16 +6,13 @@ const
   REGEX = /^\!stats ([\S]+)(\s+\d+d)?/i,
   NAME = 'Stats',
   REPLY = `\`\`\`
-  %TIME_WINDOW% stats for %ACCOUNT%
-  ----------------------------
-
-  Win Rate (draw as loss): %WR_DRAW%%\n
-  Win Rate (no draw): %WR_NO_DRAW%%\n
-  Wins: %WINS%\n
-  Draws: %DRAWS%\n
-  Losses: %LOSSES%\n
-  Heroes: Comming soon...
-  \`\`\``
+%TIME_WINDOW% stats for %ACCOUNT%
+----------------------------
+W-D-L: %W%-%D%-%L% (%WR%%)
+Heroes: Comming soon...
+%PLAYED_WITH%
+\`\`\``,
+  WITH_ENTRY = 'With %ACCOUNT%: %W%-%D%-%L% (%WR%%)'
 
 exports.name = NAME
 
@@ -37,14 +34,15 @@ exports.process = msg => {
       if (matches.length) {
         let s_data = stats(matches),
             humanized_time = days ? `Last ${ days } day${ days > 1 ? 's' : '' }`: 'All time',
+            played_with = format_played_with(s_data.with)
             replacements = {
               TIME_WINDOW: humanized_time,
               ACCOUNT: full_account,
-              WR_DRAW: s_data.wr_draw,
-              WR_NO_DRAW: s_data.wr_no_draw,
-              WINS: s_data.wins,
-              DRAWS: s_data.draws,
-              LOSSES: s_data.losses
+              WR: s_data.WR,
+              W: s_data.W,
+              D: s_data.D,
+              L: s_data.L,
+              PLAYED_WITH: played_with
             },
             content = replaceText(REPLY, replacements)
         msg.channel.send(content)
@@ -55,13 +53,35 @@ exports.process = msg => {
   }
 }
 
-stats = matches => {
+const stats = matches => {
   let out = {
-    wins: matches.filter(m => m.result === 'W').length,
-    draws: matches.filter(m => m.result === 'D').length,
-    losses: matches.filter(m => m.result === 'L').length,
+    W: 0,
+    D: 0,
+    L: 0,
+    with: {}
   }
-  out.wr_draw = percentage(out.wins / (out.wins + out.draws + out.losses))
-  out.wr_no_draw = (out.wins + out.losses) ? percentage(out.wins / (out.wins + out.losses)) : '-'
+  for (let m of matches) {
+    out[m.result]++
+    for (let a of m.played_with || []) {
+      if (!out.with[a])
+        out.with[a] = {
+          W: 0,
+          D: 0,
+          L: 0
+        }
+      out.with[a][m.result]++
+    }
+  }
+  out.WR = percentage(out.W / (out.W + out.D + out.L))
   return out
+}
+
+const format_played_with = data => {
+  return Object.entries(data).sort((a, b) => a[0].localeCompare(b[0])).map(([acc, stats]) => replaceText(WITH_ENTRY, {
+    ACCOUNT: acc,
+    W: stats.W,
+    D: stats.D,
+    L: stats.L,
+    WR: percentage(stats.W / (stats.W + stats.D + stats.L))
+  })).join("\n")
 }

@@ -20,7 +20,6 @@ global.last_recorded_sr = {}
 global.client = new Discord.Client()
 const m = async _ => {
   initAWS()
-  /* TODO REMOVE LAST SR */
   await Promise.all([populateLastSr(last_recorded_sr), populateLastId()])
   console.log(`Last recorded SR: ${ Object.entries(last_recorded_sr).map(([a, b]) => `${ a }: ${ b }`) }`)
 
