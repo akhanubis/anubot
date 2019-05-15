@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/translate": "^4.0.0",
     "aws-sdk": "^2.450.0",
     "discord.js": "^11.4.2",
     "moment": "^2.24.0",

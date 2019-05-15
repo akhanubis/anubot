@@ -36,6 +36,16 @@ __!repo__
 \`\`\`
 !repo
 \`\`\`
+__!translate a-sentence-not-in-english__
+*Translates the given sentence to English*
+\`\`\`
+!translate hola, como estás?
+\`\`\`
+__!translatelast__
+*Translates the previous message sent to the channel to English*
+\`\`\`
+!translatelast
+\`\`\`
 **TRIGGERS** (bot will react to any messages matching the format of any triggers)
 \`\`\`
 (result) map

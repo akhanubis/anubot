@@ -1,0 +1,1 @@
+exports.translate = _ => 'a translation'
