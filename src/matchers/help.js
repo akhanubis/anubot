@@ -44,7 +44,7 @@ __!translate a-sentence-not-in-english__
 __!translatedm a-sentence-not-in-english__
 *Translates the given sentence to English and sends the result via DM*
 \`\`\`
-!translate hola, como estás?
+!translatedm hola, como estás?
 \`\`\`
 __!translatelast__
 *Translates the previous message sent to the channel to English*
@@ -54,7 +54,7 @@ __!translatelast__
 __!translatelastdm__
 *Translates the previous message sent to the channel to English and sends the result via DM*
 \`\`\`
-!translatelast
+!translatelastdm
 \`\`\`
 `,
   REPLY_2 = `
