@@ -41,11 +41,23 @@ __!translate a-sentence-not-in-english__
 \`\`\`
 !translate hola, como estás?
 \`\`\`
+__!translatedm a-sentence-not-in-english__
+*Translates the given sentence to English and sends the result via DM*
+\`\`\`
+!translate hola, como estás?
+\`\`\`
 __!translatelast__
 *Translates the previous message sent to the channel to English*
 \`\`\`
 !translatelast
 \`\`\`
+__!translatelastdm__
+*Translates the previous message sent to the channel to English and sends the result via DM*
+\`\`\`
+!translatelast
+\`\`\`
+`,
+  REPLY_2 = `
 **TRIGGERS** (bot will react to any messages matching the format of any triggers)
 \`\`\`
 (result) map
@@ -72,4 +84,7 @@ exports.name = NAME
 
 exports.regex = REGEX
 
-exports.process = msg => msg.channel.send(REPLY)
+exports.process = msg => {
+  msg.channel.send(REPLY)
+  .then(msg.channel.send(REPLY_2))
+}

@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const { DISCORD_TOKEN, ACTIVITY_REFRESH_INTERVAL_IN_S, ALLOWED_SERVERS } = require('./env')
+const { DISCORD_TOKEN, ACTIVITY_REFRESH_INTERVAL_IN_S, ALLOWED_SERVERS, ALLOWED_DM_USERS } = require('./env')
 const { initAWS, initGoogle } = require('./startup')
 const { populateLastSr, populateLastId } = require('./db')
 const { setActivity, emoji } = require('./utils')
@@ -14,8 +14,8 @@ const MATCHERS = [
   'matchReplace',
   'help',
   'constant',
-  'translate',
-  'translateLast'
+  'translateLast',
+  'translate'
 ].map(f => require(`./matchers/${ f }`))
 
 global.last_recorded_sr = {}
@@ -32,7 +32,12 @@ const m = async _ => {
     setActivity()
   })
   global.client.on('message', async msg => {
-    if (!ALLOWED_SERVERS.includes(msg.channel.guild.id) || msg.author.bot)
+    /*
+    if bot
+    or dm from unwanted person
+    or message from unwanted server 
+    */
+    if (msg.author.bot || (msg.channel.type === 'dm' && !ALLOWED_DM_USERS.includes(msg.author.id)) || (msg.channel.type === 'text' && !ALLOWED_SERVERS.includes(msg.channel.guild.id)))
       return
     for (let m of MATCHERS)
       if (msg.content.match(m.regex)) {
@@ -46,6 +51,7 @@ const m = async _ => {
           console.log(e)
           msg.react(emoji(ERROR_EMOJI))
         }
+        break
       }
   })
   global.client.login(DISCORD_TOKEN)
