@@ -56,6 +56,11 @@ __!translatelastdm__
 \`\`\`
 !translatelastdm
 \`\`\`
+__!lacqua a question__
+*Answers any questions you may have, no matter how hard or complex they are*
+\`\`\`
+!lacqua how to gain sr
+\`\`\`
 `,
   REPLY_2 = `
 **TRIGGERS** (bot will react to any messages matching the format of any triggers)

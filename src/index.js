@@ -15,7 +15,8 @@ const MATCHERS = [
   'help',
   'constant',
   'translateLast',
-  'translate'
+  'translate',
+  'lacqua'
 ].map(f => require(`./matchers/${ f }`))
 
 global.last_recorded_sr = {}
