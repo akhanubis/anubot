@@ -13,6 +13,7 @@ exports.MAPS_LIST = {
   'horizon': 'Horizon Lunar Colony',
   'horizon lunar colony': 'Horizon Lunar Colony',
   'horizon colony': 'Horizon Lunar Colony',
+  'lunar colony': 'Horizon Lunar Colony',
   'paris': 'Paris',
   'anubis': 'Temple of Anubis',
   'temple of anubis': 'Temple of Anubis',
