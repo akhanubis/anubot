@@ -39,12 +39,12 @@ __!repo__
 __!translate a-sentence-not-in-english__
 *Translates the given sentence to English*
 \`\`\`
-!translate hola, como estás?
+!translate hola, cómo estás?
 \`\`\`
 __!translatedm a-sentence-not-in-english__
 *Translates the given sentence to English and sends the result via DM*
 \`\`\`
-!translatedm hola, como estás?
+!translatedm hola, cómo estás?
 \`\`\`
 __!translatelast__
 *Translates the previous message sent to the channel to English*
