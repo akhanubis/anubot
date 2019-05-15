@@ -12,5 +12,5 @@ exports.regex = REGEX
 exports.process = async msg => {
   let [_, dm, source_text] = msg.content.match(REGEX)
       translations = await translate([source_text])
-  translateAndReply(msg, dm, translations)
+  translateAndReply(msg, dm, translations, !!dm)
 }
