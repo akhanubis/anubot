@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const { DISCORD_TOKEN, ACTIVITY_REFRESH_INTERVAL_IN_S, ALLOWED_SERVER } = require('./env')
+const { DISCORD_TOKEN, ACTIVITY_REFRESH_INTERVAL_IN_S, ALLOWED_SERVERS } = require('./env')
 const { initAWS, initGoogle } = require('./startup')
 const { populateLastSr, populateLastId } = require('./db')
 const { setActivity, emoji } = require('./utils')
@@ -32,7 +32,7 @@ const m = async _ => {
     setActivity()
   })
   global.client.on('message', async msg => {
-    if (msg.channel.guild.id !== ALLOWED_SERVER || msg.author.bot)
+    if (!ALLOWED_SERVERS.includes(msg.channel.guild.id) || msg.author.bot)
       return
     for (let m of MATCHERS)
       if (msg.content.match(m.regex)) {
