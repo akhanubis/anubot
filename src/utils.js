@@ -20,4 +20,4 @@ exports.delayedDelete = m => setTimeout(() => m.delete(), WAIT_BEFORE_DESTROY_IN
 
 exports.replaceText = (text, replacements) => Object.entries(replacements).reduce((replaced, [k, v]) => replaced.replace(`%${ k }%`, v), text)
 
-exports.previousMessage = msg => msg.channel.fetchMessages({ limit: 1, before: msg.id }).then(collection => collection.first())
+exports.previousMessages = (msg, limit = 10) => msg.channel.fetchMessages({ limit: limit, before: msg.id })

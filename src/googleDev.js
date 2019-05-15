@@ -1,1 +1,1 @@
-exports.translate = _ => 'a translation'
+exports.translate = _ => ['a translation']

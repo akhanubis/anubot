@@ -10,6 +10,6 @@ exports.regex = REGEX
 
 exports.process = async msg => {
   let source_text = msg.content.match(REGEX)[1]
-      translation = await translate(source_text)
-  msg.channel.send(translation)
+      translation = await translate([source_text])
+  msg.channel.send(translation[0])
 }
