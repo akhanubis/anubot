@@ -1,6 +1,6 @@
 const { ACCOUNTS_LIST, DAY_TO_MS } = require('../constants')
 const { matchesByAccount } = require('../db')
-const { emoji, percentage, replaceText } = require('../utils')
+const { emoji, percentage, float, replaceText, draw } = require('../utils')
 
 const
   REGEX = /^\!stats ([\S]+)(\s+\d+d)?/i,
@@ -13,6 +13,9 @@ W-D-L: %W%-%D%-%L% (%WR%%)
 %PLAYED_AS%
 ----------------------------
 %PLAYED_WITH%
+----------------------------
++%AVG_SR_WIN% avg SR on win
+-%AVG_SR_LOSS% avg SR on loss
 \`\`\``,
   WITH_ENTRY = 'With %ACCOUNT%: %W%-%D%-%L% (%WR%%)',
   AS_ENTRY = '%HERO%: %W%-%D%-%L% (%WR%%)'
@@ -47,7 +50,9 @@ exports.process = msg => {
               D: s_data.D,
               L: s_data.L,
               PLAYED_WITH: played_with,
-              PLAYED_AS: played_as
+              PLAYED_AS: played_as,
+              AVG_SR_WIN: s_data.AVG_SR_WIN,
+              AVG_SR_LOSS: s_data.AVG_SR_LOSS
             },
             content = replaceText(REPLY, replacements)
         msg.channel.send(content)
@@ -64,10 +69,24 @@ const stats = matches => {
     D: 0,
     L: 0,
     with: {},
-    as: {}
+    as: {},
+    sr: {
+      W: {
+        count: 0,
+        total: 0
+      },
+      L: {
+        count: 0,
+        total: 0
+      }
+    }
   }
   for (let m of matches) {
     out[m.result]++
+    if (m.sr && m.sr.diff && !draw(m)) {
+      out.sr[m.result].count++
+      out.sr[m.result].total += m.sr.diff
+    }
     for (let a of m.played_with || []) {
       if (!out.with[a])
         out.with[a] = {
@@ -88,6 +107,8 @@ const stats = matches => {
     }
   }
   out.WR = percentage(out.W / (out.W + out.D + out.L))
+  out.AVG_SR_WIN = float(out.sr.W.count ? out.sr.W.total / out.sr.W.count : 0)
+  out.AVG_SR_LOSS = float(out.sr.L.count ? Math.abs(out.sr.L.total / out.sr.L.count) : 0)
   return out
 }
 

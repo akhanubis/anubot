@@ -8,6 +8,8 @@ exports.setActivity = () => global.client.user.setActivity(...exports.pickRandom
 
 exports.percentage = n => (Math.round(10000 * n) / 100).toFixed(2)
 
+exports.float = (n, decimal_places = 2) => (Math.round(n * Math.pow(10, decimal_places)) / Math.pow(10, decimal_places)).toFixed(2)
+
 exports.win = m => m.result === 'W'
 
 exports.loss = m => m.result === 'L'
