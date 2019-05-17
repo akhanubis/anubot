@@ -14,8 +14,11 @@ W-D-L: %W%-%D%-%L% (%WR%%)
 ----------------------------
 %PLAYED_WITH%
 ----------------------------
-+%AVG_SR_WIN% avg SR on win
--%AVG_SR_LOSS% avg SR on loss
+Last recorded SR: %CURRENT_SR%
+Highest SR: %MAX_SR%
+Lowest SR: %MIN_SR%
+Avg SR on win: +%AVG_SR_WIN%
+Avg SR on loss: -%AVG_SR_LOSS%
 \`\`\``,
   WITH_ENTRY = 'With %ACCOUNT%: %W%-%D%-%L% (%WR%%)',
   AS_ENTRY = '%HERO%: %W%-%D%-%L% (%WR%%)'
@@ -52,7 +55,10 @@ exports.process = msg => {
               PLAYED_WITH: played_with,
               PLAYED_AS: played_as,
               AVG_SR_WIN: s_data.AVG_SR_WIN,
-              AVG_SR_LOSS: s_data.AVG_SR_LOSS
+              AVG_SR_LOSS: s_data.AVG_SR_LOSS,
+              CURRENT_SR: s_data.sr.current,
+              MAX_SR: s_data.sr.max,
+              MIN_SR: s_data.sr.min
             },
             content = replaceText(REPLY, replacements)
         msg.channel.send(content)
@@ -78,12 +84,32 @@ const stats = matches => {
       L: {
         count: 0,
         total: 0
-      }
+      },
+      min: null,
+      max: null,
+      current: null
     }
   }
+
+  for (let m of matches) {
+    for (let a of ['end', 'start'])
+      if (m.sr[a]) {
+        out.sr.current = m.sr[a]
+        break
+      }
+    if (out.sr.current)
+      break
+  }
+
   for (let m of matches) {
     out[m.result]++
-    if (m.sr && m.sr.diff && !draw(m)) {
+    for (let a of ['start', 'end']) {
+      if (m.sr[a] && (!out.sr.min || out.sr.min > m.sr[a]))
+        out.sr.min = m.sr[a]
+      if (m.sr[a] && (!out.sr.max || out.sr.max < m.sr[a]))
+        out.sr.max = m.sr[a]
+    }
+    if (m.sr.diff && !draw(m)) {
       out.sr[m.result].count++
       out.sr[m.result].total += m.sr.diff
     }

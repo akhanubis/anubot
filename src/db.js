@@ -58,7 +58,7 @@ exports.matchesByAccount = async (acc, since) => {
     if (!last_evaluated_key)
       break
   }
-  return out
+  return out.sort((a, b) => b.timestamp.localeCompare(a.timestamp))
 }
 
 exports.deleteMatchById = async id => {
@@ -91,7 +91,6 @@ exports.populateLastId = async _ => {
     ProjectionExpression: 'match_id'
   }).promise())
   let responses = await Promise.all(promises)
-  console.log(responses.map(r => (r.Items[0] || {}).match_id))
   global.last_id = Math.max.apply(this, responses.map(r => (r.Items[0] || {}).match_id || 0))
 }
 
