@@ -9,10 +9,13 @@ const
 %TIME_WINDOW% stats for %ACCOUNT%
 ----------------------------
 W-D-L: %W%-%D%-%L% (%WR%%)
-Heroes: Comming soon...
+----------------------------
+%PLAYED_AS%
+----------------------------
 %PLAYED_WITH%
 \`\`\``,
-  WITH_ENTRY = 'With %ACCOUNT%: %W%-%D%-%L% (%WR%%)'
+  WITH_ENTRY = 'With %ACCOUNT%: %W%-%D%-%L% (%WR%%)',
+  AS_ENTRY = '%HERO%: %W%-%D%-%L% (%WR%%)'
 
 exports.name = NAME
 
@@ -34,7 +37,8 @@ exports.process = msg => {
       if (matches.length) {
         let s_data = stats(matches),
             humanized_time = days ? `Last ${ days } day${ days > 1 ? 's' : '' }`: 'All time',
-            played_with = format_played_with(s_data.with)
+            played_with = format_played_with_as(s_data.with, WITH_ENTRY),
+            played_as = format_played_with_as(s_data.as, AS_ENTRY)
             replacements = {
               TIME_WINDOW: humanized_time,
               ACCOUNT: full_account,
@@ -42,7 +46,8 @@ exports.process = msg => {
               W: s_data.W,
               D: s_data.D,
               L: s_data.L,
-              PLAYED_WITH: played_with
+              PLAYED_WITH: played_with,
+              PLAYED_AS: played_as
             },
             content = replaceText(REPLY, replacements)
         msg.channel.send(content)
@@ -58,7 +63,8 @@ const stats = matches => {
     W: 0,
     D: 0,
     L: 0,
-    with: {}
+    with: {},
+    as: {}
   }
   for (let m of matches) {
     out[m.result]++
@@ -71,14 +77,24 @@ const stats = matches => {
         }
       out.with[a][m.result]++
     }
+    for (let a of m.heroes || []) {
+      if (!out.as[a])
+        out.as[a] = {
+          W: 0,
+          D: 0,
+          L: 0
+        }
+      out.as[a][m.result]++
+    }
   }
   out.WR = percentage(out.W / (out.W + out.D + out.L))
   return out
 }
 
-const format_played_with = data => {
-  return Object.entries(data).sort((a, b) => a[0].localeCompare(b[0])).map(([acc, stats]) => replaceText(WITH_ENTRY, {
-    ACCOUNT: acc,
+const format_played_with_as = (data, entry_text) => {
+  return Object.entries(data).sort((a, b) => a[0].localeCompare(b[0])).map(([acc_or_hero, stats]) => replaceText(entry_text, {
+    ACCOUNT: acc_or_hero,
+    HERO: acc_or_hero,
     W: stats.W,
     D: stats.D,
     L: stats.L,
