@@ -121,11 +121,12 @@ exports.HEROES_LIST = {
 }
 
 exports.ACTIVITIES = [
-  ['the SR go down', { type: 'WATCHING' }],
-  ['Leonard Cohen', { type: 'LISTENING' }],
-  ['Ariana Grande', { type: 'LISTENING' }],
+  ['the sr go down', { type: 'WATCHING' }],
+  ['leonard cohen', { type: 'LISTENING' }],
+  ['ariana grande', { type: 'LISTENING' }],
   ['teammates flame me :(', { type: 'LISTENING' }],
-  ['a happy song', { type: 'PLAYING' }]
+  ['a happy song', { type: 'PLAYING' }],
+  ['cba\'s instagram feed', { type: 'LISTENING' }]
 ]
 
 exports.PATS = {
