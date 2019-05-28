@@ -61,6 +61,11 @@ __!lacqua a question__
 \`\`\`
 !lacqua how to gain sr
 \`\`\`
+__!poll something
+*Adds 1-5 reactions to the message to use them as poll options*
+\`\`\`
+!poll how cool am I?
+\`\`\`
 `,
   REPLY_2 = `
 **TRIGGERS** (bot will react to any messages matching the format of any triggers)

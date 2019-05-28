@@ -16,7 +16,8 @@ const MATCHERS = [
   'constant',
   'translateLast',
   'translate',
-  'lacqua'
+  'lacqua',
+  'poll'
 ].map(f => require(`./matchers/${ f }`))
 
 global.last_recorded_sr = {}
@@ -45,7 +46,8 @@ const m = async _ => {
         console.log(`Processing message with ${ m.name }`)
         try {
           await m.process(msg)
-          msg.react(emoji(SUCCESS_EMOJI))
+          if (!m.skip_reaction)
+            msg.react(emoji(SUCCESS_EMOJI))
         }
         catch(e) {
           console.log('Error processing message')
