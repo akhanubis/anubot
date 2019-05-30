@@ -60,7 +60,14 @@ exports.ACCOUNTS_LIST = {
   'coyce': 'Coyce',
   'trutututu': 'Trutututu',
   'bats': 'Trutututu',
-  'freestyle': 'Freestyle'
+  'freestyle': 'Freestyle',
+  'kat': 'Kat',
+  'kat!': 'Kat',
+  'dinkle': 'Dinkleberg!',
+  'dinkleberg!': 'Dinkleberg!',
+  'goofygoober': 'GoofyGoober',
+  'goofy': 'GoofyGoober',
+  'goober': 'GoofyGoober'
 }
 
 exports.PLAYERS_LIST = {
@@ -70,7 +77,9 @@ exports.PLAYERS_LIST = {
   'Coyce': ['Coyce'],
   'Neon': ['NeonXD'],
   'Bats': ['Trutututu'],
-  'Freestyle': ['Freestyle']
+  'Freestyle': ['Freestyle'],
+  'Kat': ['Kat', 'Dinkleberg!'],
+  'Goober': ['GoofyGoober']
 }
 
 exports.HEROES_LIST = {
