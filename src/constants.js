@@ -143,7 +143,6 @@ exports.PATS = {
   Sombra: 'patsombra',
   Pharah: 'patpharah',
   Mercy: 'patmercy',
-  Genji: 'patgenji',
   Brigitte: 'patbrigitte',
   Ana: 'patana',
   Reinhardt: 'patrein',
