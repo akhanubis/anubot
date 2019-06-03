@@ -19,6 +19,8 @@ exports.name = NAME
 
 exports.regex = REGEX
 
+exports.skip_reaction = true
+
 exports.process = msg => {
   if (not_in_cooldown()) {
     let song = msg.content.match(REGEX)[2],
