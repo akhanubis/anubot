@@ -16,6 +16,22 @@ exports.populateLastId = _ => {
 }
 
 exports.deleteMatchById = id => {
-  console.log(`[Dev] Deleting match by message id ${ id }`)
+  console.log(`[Dev] Deleting match by id ${ id }`)
   return Promise.resolve([{ timestamp: new Date().toISOString(), match_id: 6, message_id: 123456 }])
+}
+
+exports.saveNades = async (tags, nades) => {
+  console.log(`[Dev] Storing nades with tags ${ tags.join(', ') }`)
+  return nades.map(_ => Math.floor(Math.random() * 1000000))
+}
+
+exports.populateLastNadeId = _ => {
+  console.log('[Dev] Populating last nade_id')
+  global.last_nade_id = 30
+  return Promise.resolve()
+}
+
+exports.deleteNadeById = id => {
+  console.log(`[Dev] Deleting nade by id ${ id }`)
+  return Promise.resolve([{ timestamp: new Date().toISOString(), nade_id: id }])
 }

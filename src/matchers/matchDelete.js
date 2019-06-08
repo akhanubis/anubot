@@ -3,7 +3,7 @@ const { delayedDelete } = require('../utils')
 
 const
   REGEX = /^!deletematch\s+\#(\d+)/i,
-  NAME = 'Delete match'
+  NAME = 'Delete Match'
 
 exports.name = NAME
 

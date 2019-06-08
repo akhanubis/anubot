@@ -4,7 +4,7 @@ const { parseMatch, formatMatch, matchAppendId } = require('../matchUtils')
 
 const
   REGEX = /^!replacematch\s+\#(\d+)\n([\s\S]+)$/i,
-  NAME = 'Replace match'
+  NAME = 'Replace Match'
 
 exports.name = NAME
 

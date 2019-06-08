@@ -6,12 +6,12 @@ const
   REGEX = /^-p(lay)? (.+)/i,
   REPLIES = [
     'ugh, why u do this %AUTHOR%?',
-    //'this is my jam!',
-    'please no, not %ARTIST% again'
+    'this is my jam!',
+    'please no, not this again',
+    'best song eva'
   ],
   NAME = 'Music',
-  COMMAND_CD_IN_S = 1800,
-  ARTISTS = ['kanye']
+  COMMAND_CD_IN_S = 1800
 
 let last_time_run = null
 
@@ -23,16 +23,11 @@ exports.skip_reaction = true
 
 exports.process = msg => {
   if (not_in_cooldown()) {
-    let song = msg.content.match(REGEX)[2],
-        artist = ARTISTS.find(a => song.split(' ').map(b => b.toLowerCase()).includes(a))
-    if (artist) {
-      last_time_run = moment.utc()
-      let content = replaceText(pickRandom(REPLIES), {
-        ARTIST: artist,
-        AUTHOR: msg.author.username
-      })
-      msg.channel.send(content)
-    }
+    last_time_run = moment.utc()
+    let content = replaceText(pickRandom(REPLIES), {
+      AUTHOR: msg.author.username
+    })
+    msg.channel.send(content)
   }
 }
 

@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const { DISCORD_TOKEN, ACTIVITY_REFRESH_INTERVAL_IN_S, ALLOWED_SERVERS, ALLOWED_DM_USERS } = require('./env')
 const { initAWS, initGoogle } = require('./startup')
-const { populateLastSr, populateLastId } = require('./db')
+const { populateLastSr, populateLastId, populateLastNadeId } = require('./db')
 const { setActivity, emoji } = require('./utils')
 const { ERROR_EMOJI, SUCCESS_EMOJI } = require('./constants')
 
@@ -17,7 +17,10 @@ const MATCHERS = [
   'translateLast',
   'translate',
   'lacqua',
-  'poll'
+  'poll',
+  'nade',
+  'nadeSave',
+  'nadeDelete'
 ].map(f => require(`./matchers/${ f }`))
 
 global.last_recorded_sr = {}
@@ -25,8 +28,10 @@ global.client = new Discord.Client()
 const m = async _ => {
   initAWS()
   initGoogle()
-  await Promise.all([populateLastSr(last_recorded_sr), populateLastId()])
-  console.log(`Last recorded SR: ${ Object.entries(last_recorded_sr).map(([a, b]) => `${ a }: ${ b }`) }`)
+  await Promise.all([populateLastSr(), populateLastId(), populateLastNadeId()])
+  console.log(`Last recorded SR: ${ Object.entries(global.last_recorded_sr).map(([a, b]) => `${ a }: ${ b }`).join(', ') }`)
+  console.log(`Last recorded match_id: ${ global.last_id }`)
+  console.log(`Last recorded nade_id: ${ global.last_nade_id }`)
 
   global.client.on('ready', () => {
     console.log(`Logged in as ${ global.client.user.tag }!`)

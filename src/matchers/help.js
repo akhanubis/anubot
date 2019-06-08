@@ -1,7 +1,8 @@
 const
   REGEX = /^\!help/i,
   NAME = 'Help',
-  REPLY = `
+  REPLY_CHUNKS = [
+    `
 **COMMANDS**
 __!stats an-account Nd__
 *Shows stats for the given account for the last N days.
@@ -61,13 +62,34 @@ __!lacqua a question__
 \`\`\`
 !lacqua how to gain sr
 \`\`\`
-__!poll something
+__!poll something__
 *Adds 1-5 reactions to the message to use them as poll options*
 \`\`\`
 !poll how cool am I?
 \`\`\`
 `,
-  REPLY_2 = `
+    `
+__!savenades tag1,tag2,tag3
+%LINKS%__
+*Stores attachments and external links with the given tags to be able to retrieve them later with !nade.
+Optional multiline command. You can provide the media via attachment or as text after the first line*
+\`\`\`
+!savenade ariana grande, music, pop
+https://open.spotify.com/track/2tpIAmAq9orm1Owh5pja1w?si=O7JEs7VQRN27GLCiTC_7Yw
+https://open.spotify.com/track/3wFLWP0FcIqHK1wb1CPthQ?si=Zqm0DRtEQleZsk0dbGfjMw
+\`\`\`
+__!nade tag1,tag2,tag3__
+*Retrieves the previously stored media (via !savenades) that matches all the tags provided*
+\`\`\`
+!nade music
+\`\`\`
+__!deletenade #a-nade-id__
+*Removes the given media and all its tag associations*
+\`\`\`
+!deletenade #5
+\`\`\`
+`,
+    `
 **TRIGGERS** (bot will react to any messages matching the format of any triggers)
 \`\`\`
 (result) map
@@ -89,12 +111,13 @@ notes: ez combos for an ez win
 \`\`\`
 Some more hidden triggers... you will have to browse the source code to find them ;)
 `
+  ]
 
 exports.name = NAME
 
 exports.regex = REGEX
 
-exports.process = msg => {
-  msg.channel.send(REPLY)
-  .then(msg.channel.send(REPLY_2))
+exports.process = async msg => {
+  for (let r of REPLY_CHUNKS)
+    await msg.channel.send(r)
 }

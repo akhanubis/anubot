@@ -1,5 +1,5 @@
 const { ACCOUNTS_LIST } = require('./constants')
-const { BEANSTALK, MATCHES_TABLE, MATCHES_TABLE_MATCH_ID_INDEX } = require('./env')
+const { BEANSTALK, MATCHES_TABLE, MATCHES_TABLE_MATCH_ID_INDEX, NADES_TABLE, NADES_TABLE_SCANNABLE_INDEX, NADES_TABLE_NADE_ID_INDEX } = require('./env')
 
 exports.saveMatch = async (match, overriden_id) => {
   let match_common_data = { ...match, match_id: parseInt(overriden_id || next_id()), players: undefined },
@@ -16,7 +16,7 @@ exports.saveMatch = async (match, overriden_id) => {
   return match_common_data.match_id
 }
 
-exports.populateLastSr = last_sr => {
+exports.populateLastSr = _ => {
   console.log('Fetching initial latest SR data...')
   let promises = Object.values(ACCOUNTS_LIST).map(acc => global.db.query({
     TableName: MATCHES_TABLE,
@@ -32,7 +32,7 @@ exports.populateLastSr = last_sr => {
     for (let response of responses) {
       let last_match = response.Items[0]
       if (last_match)
-        last_sr[last_match.account] = (last_match.sr || {}).end
+        global.last_recorded_sr[last_match.account] = (last_match.sr || {}).end
     }
   })
 }
@@ -94,7 +94,85 @@ exports.populateLastId = async _ => {
   global.last_id = Math.max.apply(this, responses.map(r => (r.Items[0] || {}).match_id || 0))
 }
 
+exports.populateLastNadeId = async _ => {
+  console.log('Fetching initial latest nade_id...')
+  let latest_entry = (await global.db.query({
+    TableName: NADES_TABLE,
+    IndexName: NADES_TABLE_SCANNABLE_INDEX,
+    KeyConditionExpression: 'scannable = :t',
+    ExpressionAttributeValues: { ':t': 't' },
+    Limit: 1,
+    ScanIndexForward: false,
+    ProjectionExpression: 'nade_id'
+  }).promise()).Items[0] || {}
+  global.last_nade_id = latest_entry.nade_id || 0
+}
+
+exports.getNades = async tags => {
+  let promises = tags.map(t => global.db.query({
+        TableName: NADES_TABLE,
+        KeyConditionExpression: 'tag = :t',
+        ExpressionAttributeValues: { ':t': t },
+        ProjectionExpression: '#url, nade_id, attachable',
+        ExpressionAttributeNames: { '#url': 'url' }
+      }).promise()),
+      nades_per_tag = (await Promise.all(promises)).map(result => result.Items),
+      occurrences = {},
+      url_to_nade = {}
+  for (let nades of nades_per_tag)
+    for (let n of nades) {
+      url_to_nade[n.url] = n
+      occurrences[n.url] = (occurrences[n.url] || 0) + 1
+    }
+  /* return nades that match all the tags */
+  return Object.keys(occurrences).filter(url => occurrences[url] === nades_per_tag.length).map(url => url_to_nade[url])
+}
+
+exports.saveNades = async (tags, nades) => {
+  let new_ids = []
+  for (let n of nades) {
+    let nade_id = next_nade_id(),
+        timestamp = new Date().toISOString(),
+        promises = tags.map(t => global.db.put({
+          TableName: NADES_TABLE,
+          Item: {
+            tag: t,
+            timestamp: timestamp,
+            url: n.url,
+            attachable: n.attachable,
+            nade_id: nade_id,
+            scannable: 't',
+            scannable_timestamp: timestamp
+          }
+        }).promise())
+    await Promise.all(promises)
+    new_ids.push(nade_id)
+  }
+  return new_ids
+}
+
+exports.deleteNadeById = async id => {
+  let existing = (await global.db.query({
+    TableName: NADES_TABLE,
+    IndexName: NADES_TABLE_NADE_ID_INDEX,
+    KeyConditionExpression: 'nade_id = :n',
+    ExpressionAttributeValues: { ':n': parseInt(id) }
+  }).promise()).Items
+  if (!existing.length)
+    throw('No nade found')
+  await Promise.all(existing.map(entry => global.db.delete({
+      TableName: NADES_TABLE,
+      Key: {
+        tag: entry.tag,
+        timestamp: entry.timestamp
+      }
+    }).promise()))
+  return existing
+}
+
 const next_id = _ => ++global.last_id
+
+const next_nade_id = _ => ++global.last_nade_id
 
 if (!BEANSTALK) {
   let mock = require('./dbDev')
