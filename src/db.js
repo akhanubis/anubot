@@ -1,5 +1,7 @@
 const { ACCOUNTS_LIST } = require('./constants')
-const { BEANSTALK, MATCHES_TABLE, MATCHES_TABLE_MATCH_ID_INDEX, NADES_TABLE, NADES_TABLE_SCANNABLE_INDEX, NADES_TABLE_NADE_ID_INDEX } = require('./env')
+const { BEANSTALK, MATCHES_TABLE, MATCHES_TABLE_MATCH_ID_INDEX, NADES_TABLE, NADES_TABLE_SCANNABLE_INDEX, NADES_TABLE_NADE_ID_INDEX, TODOS_TABLE, TODOS_TABLE_USER_ID_INDEX } = require('./env')
+
+const TODO_MAX_ENTRIES = 15
 
 exports.saveMatch = async (match, overriden_id) => {
   let match_common_data = { ...match, match_id: parseInt(overriden_id || next_id()), players: undefined },
@@ -170,9 +172,53 @@ exports.deleteNadeById = async id => {
   return existing
 }
 
+exports.saveTodo = (user, task) => {
+  let ts = new Date().toISOString()
+  return global.db.put({
+    TableName: TODOS_TABLE,
+    Item: {
+      task_id: task_id(user, task),
+      timestamp: ts,
+      task: task,
+      user_id: user.id,
+      list_timestamp: ts
+    }
+  }).promise()
+}
+
+exports.doTodo = async (user, task) => {
+  let matching_tasks = (await global.db.query({
+    TableName: TODOS_TABLE,
+    KeyConditionExpression: 'task_id = :t',
+    ExpressionAttributeValues: { ':t': task_id(user, task) },
+    FilterExpression: 'attribute_not_exists(done)',
+    ProjectionExpression: 'task_id, #timestamp',
+    ExpressionAttributeNames: { '#timestamp': 'timestamp' }
+  }).promise()).Items
+  await Promise.all(matching_tasks.map(t => global.db.update({
+    TableName: TODOS_TABLE,
+    Key: t,
+    UpdateExpression: 'SET done = :t',
+    ExpressionAttributeValues: { ':t': true }
+  }).promise()))
+}
+
+exports.listTodo = async user => {
+  return (await global.db.query({
+    TableName: TODOS_TABLE,
+    IndexName: TODOS_TABLE_USER_ID_INDEX,
+    KeyConditionExpression: 'user_id = :u',
+    ExpressionAttributeValues: { ':u': user.id },
+    Limit: TODO_MAX_ENTRIES,
+    ScanIndexForward: false
+  }).promise()).Items.reverse()
+}
+
 const next_id = _ => ++global.last_id
 
 const next_nade_id = _ => ++global.last_nade_id
+
+const task_id = (user, task) => `${ user.id }__${ task.substr(0, 100) }`
 
 if (!BEANSTALK) {
   let mock = require('./dbDev')

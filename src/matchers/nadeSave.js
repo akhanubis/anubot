@@ -16,11 +16,11 @@ exports.process = async msg => {
       extra_attachments = (msg.content.match(REGEX)[2].trim().match(URL_REGEX) || []).map(a => ({ url: a, attachable: false })),
       nades = [...attachments, ...extra_attachments]
   if (!tags.length)
-    msg.channel.send(`tags missing ${ emoji('pepothink') }`)
+    msg.channel.send(`Tags missing ${ emoji('pepothink') }`)
   else if (!nades.length)
-    msg.channel.send(`media missing ${ emoji('pepothink') }`)
+    msg.channel.send(`Media missing ${ emoji('pepothink') }`)
   else {
     let new_ids = await saveNades(tags, nades)
-    msg.channel.send(`nade${ new_ids.length > 1 ? 's' : ''} saved as ${ new_ids.map(id => `#${ id }`).join(', ') }`)
+    msg.channel.send(`Nade${ new_ids.length > 1 ? 's' : ''} saved as ${ new_ids.map(id => `#${ id }`).join(', ') }`)
   }
 }

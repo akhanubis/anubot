@@ -20,7 +20,9 @@ const MATCHERS = [
   'poll',
   'nade',
   'nadeSave',
-  'nadeDelete'
+  'nadeDelete',
+  'todo',
+  'todoDone'
 ].map(f => require(`./matchers/${ f }`))
 
 global.last_recorded_sr = {}

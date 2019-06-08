@@ -11,5 +11,5 @@ exports.regex = REGEX
 exports.process = async msg => {
   let nade_id = msg.content.match(REGEX)[1]
   await deleteNadeById(nade_id)
-  msg.channel.send(`nade #${ nade_id } deleted`)
+  msg.channel.send(`Nade #${ nade_id } deleted`)
 }

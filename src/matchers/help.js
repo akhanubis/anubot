@@ -69,7 +69,7 @@ __!poll something__
 \`\`\`
 `,
     `
-__!savenades tag1,tag2,tag3
+__!savenades tag1, tag2, tag3
 %LINKS%__
 *Stores attachments and external links with the given tags to be able to retrieve them later with !nade.
 Optional multiline command. You can provide the media via attachment or as text after the first line*
@@ -88,8 +88,24 @@ __!deletenade #a-nade-id__
 \`\`\`
 !deletenade #5
 \`\`\`
+__!todo__
+*Shows your TODO list*
+\`\`\`
+!todo
+\`\`\`
+__!todo a task__
+*Adds a task to your TODO list*
+\`\`\`
+!todo clean my desk
+\`\`\`
+__!done a task__
+*Marks a task from your TODO list as done*
+\`\`\`
+!done clean my desk
+\`\`\`
 `,
     `
+--------------------------
 **TRIGGERS** (bot will react to any messages matching the format of any triggers)
 \`\`\`
 (result) map
