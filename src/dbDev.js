@@ -35,3 +35,20 @@ exports.deleteNadeById = id => {
   console.log(`[Dev] Deleting nade by id ${ id }`)
   return Promise.resolve([{ timestamp: new Date().toISOString(), nade_id: id }])
 }
+
+exports.saveTodo = (user, task) => console.log(`[Dev] Saving TODO task ${ task } for ${ user.username }`)
+
+exports.doTodo = (user, task) => console.log(`[Dev] Marking TODO task ${ task } for ${ user.username } as done`)
+
+exports.listTodo = _ => {
+  console.log('[Dev] Returning TODO list')
+  return [
+    {
+      task: 'clean my desk',
+      done: true
+    },
+    {
+      task: 'take a shower'
+    }
+  ]
+}
