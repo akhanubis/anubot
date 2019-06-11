@@ -133,9 +133,14 @@ exports.ACTIVITIES = [
   ['the sr go down', { type: 'WATCHING' }],
   ['leonard cohen', { type: 'LISTENING' }],
   ['ariana grande', { type: 'LISTENING' }],
-  ['teammates flame me :(', { type: 'LISTENING' }],
+  ['my teammates flame me :(', { type: 'LISTENING' }],
   ['a happy song', { type: 'PLAYING' }],
-  ['cba\'s instagram feed', { type: 'LISTENING' }]
+  ['with your heart', { type: 'PLAYING' }],
+  ['cba\'s instagram feed', { type: 'LISTENING' }],
+  ['overwatch league', { type: 'WATCHING' }],
+  ['arteezy stream', { type: 'WATCHING' }],
+  ['kanye west', { type: 'LISTENING' }],
+  ['a song of ice and fire', { type: 'LISTENING' }]
 ]
 
 exports.PATS = {
