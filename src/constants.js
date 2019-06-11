@@ -166,6 +166,32 @@ exports.RESULT_EMOJIS = {
   D: [':peach:', ':v:', ':cherries:', ':lemon:', ':strawberry:', ':medal:', ':four_leaf_clover:', ':dart:', ':love_letter:', ':avocado:', ':sunflower:', ':fire:', ':stuck_out_tongue:', ':beach_umbrella:', ':head_bandage:', ':speak_no_evil:', ':chicken:', ':boom:', ':wilted_rose:', ':8ball:', ':space_invader:', ':game_die:', ':knife:', ':crossed_swords:', ':skull_crossbones:', ':pill:', ':syringe:']
 }
 
+exports.LAUGH_BITS = [
+  {
+    bit: 'ja'
+  },
+  {
+    bit: 'ha'
+  },
+  {
+    bit: 'lo',
+    odd: true
+  }
+]
+
+exports.MAJOR_LAUGHS = [
+  {
+    prefix: 'LMA',
+    intensifier: 'O',
+    suffix: ''
+  },
+  {
+    prefix: 'L',
+    intensifier: 'O',
+    suffix: 'L'
+  }
+]
+
 exports.PUBLIC_CONSTANTS = {
   heroes: exports.HEROES_LIST,
   maps: exports.MAPS_LIST

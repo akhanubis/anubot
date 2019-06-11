@@ -1,3 +1,4 @@
+const moment = require('moment')
 const { ACTIVITIES, WAIT_BEFORE_DESTROY_IN_S } = require('./constants')
 
 exports.pickRandom = arr => arr[Math.floor(Math.random() * arr.length)]
@@ -26,3 +27,7 @@ exports.delayedDelete = m => {
 exports.replaceText = (text, replacements) => Object.entries(replacements).reduce((replaced, [k, v]) => replaced.replace(`%${ k }%`, v), text)
 
 exports.previousMessages = (msg, limit = 10) => msg.channel.fetchMessages({ limit: limit, before: msg.id })
+
+exports.onCooldown = (last_time_run, cd_in_seconds) => last_time_run && moment.utc().diff(last_time_run, 'seconds') < cd_in_seconds
+
+exports.now = _ => moment.utc()
