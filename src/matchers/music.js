@@ -4,9 +4,9 @@ const { pickRandom, replaceText, now, onCooldown } = require('../utils')
 const
   REGEX = /^-p(lay)? (.+)/i,
   REPLIES = [
-    'ugh, why u do this %AUTHOR%?',
+    //'ugh, why u do this %AUTHOR%?',
     'this is my jam!',
-    'please no, not this again',
+    //'please no, not this again',
     'best song eva'
   ],
   NAME = 'Music',

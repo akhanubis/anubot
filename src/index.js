@@ -23,6 +23,7 @@ const MATCHERS = [
   'nadeDelete',
   'todo',
   'todoDone',
+  'channelMessage',
   'jajaja'
 ].map(f => require(`./matchers/${ f }`))
 
