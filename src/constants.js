@@ -67,7 +67,8 @@ exports.ACCOUNTS_LIST = {
   'dinkleberg!': 'Dinkleberg!',
   'goofygoober': 'GoofyGoober',
   'goofy': 'GoofyGoober',
-  'goober': 'GoofyGoober'
+  'goober': 'GoofyGoober',
+  'speedy': 'Speedy'
 }
 
 exports.PLAYERS_LIST = {
@@ -78,7 +79,7 @@ exports.PLAYERS_LIST = {
   'Neon': ['NeonXD'],
   'Bats': ['Trutututu'],
   'Freestyle': ['Freestyle'],
-  'Kat': ['Kat', 'Dinkleberg!'],
+  'Kat': ['Kat', 'Dinkleberg!', 'Speedy'],
   'Goober': ['GoofyGoober']
 }
 
