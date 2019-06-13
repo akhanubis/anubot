@@ -5,7 +5,7 @@ const { emoji, pickRandom, loss, draw, humanizedResult, replaceText } = require(
 const
   MATCH_SUMMARY_REGEX = /^\*?\*?\((win|loss|draw)\) (.+)\*?\*?\n([\s\S]+)$/i,
   NOTES_REGEX = /\*?notes\:([^\n]+)/i,
-  ACCOUNT_REGEX = /(\d\. )?([a-z0-9]+)\:(.+)$/i,
+  ACCOUNT_REGEX = /(\d\. )?([a-z0-9!]+)\:(.+)$/i,
   SR_REGEX = /((\d{4})-)?(\d{4})/,
   REPLY = `
 **(%RESULT%) %MAP% %MAIN_EMOJI%**
