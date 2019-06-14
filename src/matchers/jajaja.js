@@ -2,7 +2,7 @@ const { LAUGH_BITS, MAJOR_LAUGHS } = require('../constants')
 const { now, onCooldown, pickRandom } = require('../utils')
 
 const
-  REGEX = /\b(a{0,2}(j|h){1,3}a{1,3}((j|h){1,3}a{1,3})*(j|h){1,2}a{0,2}|(lo){1,}l|lo+l|lmao{1,}|(lu){1,}l|lo+l|omegalul|k{4,})\b/i,
+  REGEX = /\b(a{0,2}(j|h){1,3}a{1,3}((j|h){1,3}a{1,3})*(j|h){1,2}a{0,2}|(lo)+l|lo+l|(lu)+l|lu+l|lmao+|omegalul|k{4,})\b/i,
   NAME = 'Jajaja',
   COMMAND_CD_IN_S = 120,
   LAUGH_CD_IN_S = 30,
