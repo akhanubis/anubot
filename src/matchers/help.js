@@ -69,24 +69,24 @@ __!poll something__
 \`\`\`
 `,
     `
-__!savenades tag1, tag2, tag3
+__!savetags tag1, tag2, tag3
 %LINKS%__
-*Stores attachments and external links with the given tags to be able to retrieve them later with !nade.
+*Stores attachments and external links with the given tags to be able to retrieve them later with !tag.
 Optional multiline command. You can provide the media via attachment or as text after the first line*
 \`\`\`
-!savenade ariana grande, music, pop
+!savetag ariana grande, music, pop
 https://open.spotify.com/track/2tpIAmAq9orm1Owh5pja1w?si=O7JEs7VQRN27GLCiTC_7Yw
 https://open.spotify.com/track/3wFLWP0FcIqHK1wb1CPthQ?si=Zqm0DRtEQleZsk0dbGfjMw
 \`\`\`
-__!nade tag1,tag2,tag3__
-*Retrieves the previously stored media (via !savenades) that matches all the tags provided*
+__!tag tag1,tag2,tag3__
+*Retrieves the previously stored media (via !savetags) that matches all the tags provided*
 \`\`\`
-!nade music
+!tag music
 \`\`\`
-__!deletenade #a-nade-id__
+__!deletetag #a-tag-id__
 *Removes the given media and all its tag associations*
 \`\`\`
-!deletenade #5
+!deletetag #5
 \`\`\`
 __!todo__
 *Shows your TODO list*

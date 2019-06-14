@@ -1,5 +1,5 @@
 const { ACCOUNTS_LIST } = require('./constants')
-const { BEANSTALK, MATCHES_TABLE, MATCHES_TABLE_MATCH_ID_INDEX, NADES_TABLE, NADES_TABLE_SCANNABLE_INDEX, NADES_TABLE_NADE_ID_INDEX, TODOS_TABLE, TODOS_TABLE_USER_ID_INDEX } = require('./env')
+const { BEANSTALK, MATCHES_TABLE, MATCHES_TABLE_MATCH_ID_INDEX, TAGS_TABLE, TAGS_TABLE_SCANNABLE_INDEX, TAGS_TABLE_GUILD_TAG_ID_INDEX, TODOS_TABLE, TODOS_TABLE_USER_ID_INDEX } = require('./env')
 
 const TODO_MAX_ENTRIES = 15
 
@@ -96,76 +96,79 @@ exports.populateLastId = async _ => {
   global.last_id = Math.max.apply(this, responses.map(r => (r.Items[0] || {}).match_id || 0))
 }
 
-exports.populateLastNadeId = async _ => {
-  console.log('Fetching initial latest nade_id...')
+exports.populateLastTagId = async _ => {
+  console.log('Fetching initial latest tag_id...')
   let latest_entry = (await global.db.query({
-    TableName: NADES_TABLE,
-    IndexName: NADES_TABLE_SCANNABLE_INDEX,
+    TableName: TAGS_TABLE,
+    IndexName: TAGS_TABLE_SCANNABLE_INDEX,
     KeyConditionExpression: 'scannable = :t',
     ExpressionAttributeValues: { ':t': 't' },
     Limit: 1,
     ScanIndexForward: false,
-    ProjectionExpression: 'nade_id'
+    ProjectionExpression: 'tag_id'
   }).promise()).Items[0] || {}
-  global.last_nade_id = latest_entry.nade_id || 0
+  global.last_tag_id = latest_entry.tag_id || 0
 }
 
-exports.getNades = async tags => {
+exports.getTags = async (guild, tags) => {
   let promises = tags.map(t => global.db.query({
-        TableName: NADES_TABLE,
-        KeyConditionExpression: 'tag = :t',
-        ExpressionAttributeValues: { ':t': t },
-        ProjectionExpression: '#url, nade_id, attachable',
+        TableName: TAGS_TABLE,
+        KeyConditionExpression: 'guild_tag = :t',
+        ExpressionAttributeValues: { ':t': guild_preffix(guild, t) },
+        ProjectionExpression: '#url, tag_id, attachable',
         ExpressionAttributeNames: { '#url': 'url' }
       }).promise()),
-      nades_per_tag = (await Promise.all(promises)).map(result => result.Items),
+      records_per_tag = (await Promise.all(promises)).map(result => result.Items),
       occurrences = {},
-      url_to_nade = {}
-  for (let nades of nades_per_tag)
-    for (let n of nades) {
-      url_to_nade[n.url] = n
-      occurrences[n.url] = (occurrences[n.url] || 0) + 1
+      url_to_record = {}
+  for (let records of records_per_tag)
+    for (let r of records) {
+      url_to_record[r.url] = r
+      occurrences[r.url] = (occurrences[r.url] || 0) + 1
     }
-  /* return nades that match all the tags */
-  return Object.keys(occurrences).filter(url => occurrences[url] === nades_per_tag.length).map(url => url_to_nade[url])
+  /* return records that match all the tags */
+  return Object.keys(occurrences).filter(url => occurrences[url] === records_per_tag.length).map(url => url_to_record[url])
 }
 
-exports.saveNades = async (tags, nades) => {
+exports.saveTags = async (guild, author, tags, medias) => {
   let new_ids = []
-  for (let n of nades) {
-    let nade_id = next_nade_id(),
+  for (let m of medias) {
+    let tag_id = next_tag_id(),
         timestamp = new Date().toISOString(),
         promises = tags.map(t => global.db.put({
-          TableName: NADES_TABLE,
+          TableName: TAGS_TABLE,
           Item: {
+            guild_tag: guild_preffix(guild, t),
             tag: t,
+            guild_tag_id: guild_preffix(guild, tag_id),
+            tag_id: tag_id,
             timestamp: timestamp,
-            url: n.url,
-            attachable: n.attachable,
-            nade_id: nade_id,
+            url: m.url,
+            attachable: m.attachable,
             scannable: 't',
-            scannable_timestamp: timestamp
+            scannable_timestamp: timestamp,
+            tagged_by: author.id
           }
         }).promise())
     await Promise.all(promises)
-    new_ids.push(nade_id)
+    new_ids.push(tag_id)
   }
   return new_ids
 }
 
-exports.deleteNadeById = async id => {
+exports.deleteTagById = async (guild, id) => {
   let existing = (await global.db.query({
-    TableName: NADES_TABLE,
-    IndexName: NADES_TABLE_NADE_ID_INDEX,
-    KeyConditionExpression: 'nade_id = :n',
-    ExpressionAttributeValues: { ':n': parseInt(id) }
+    TableName: TAGS_TABLE,
+    IndexName: TAGS_TABLE_GUILD_TAG_ID_INDEX,
+    KeyConditionExpression: 'guild_tag_id = :n',
+    ExpressionAttributeValues: { ':n': guild_preffix(guild, id) }
   }).promise()).Items
   if (!existing.length)
-    throw('No nade found')
+    throw('No tag found')
   await Promise.all(existing.map(entry => global.db.delete({
-      TableName: NADES_TABLE,
+      TableName: TAGS_TABLE,
       Key: {
-        tag: entry.tag,
+        guild_tag: entry.guild_tag,
         timestamp: entry.timestamp
       }
     }).promise()))
@@ -216,9 +219,11 @@ exports.listTodo = async user => {
 
 const next_id = _ => ++global.last_id
 
-const next_nade_id = _ => ++global.last_nade_id
+const next_tag_id = _ => ++global.last_tag_id
 
 const task_id = (user, task) => `${ user.id }__${ task.substr(0, 100) }`
+
+const guild_preffix = (guild, value) => `${ guild.id }__${ value }`
 
 if (!BEANSTALK) {
   let mock = require('./dbDev')

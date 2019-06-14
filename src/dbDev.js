@@ -19,23 +19,23 @@ exports.deleteMatchById = id => {
   console.log(`[Dev] Deleting match by id ${ id }`)
   return Promise.resolve([{ timestamp: new Date().toISOString(), match_id: 6, message_id: 123456 }])
 }
-
-exports.saveNades = async (tags, nades) => {
-  console.log(`[Dev] Storing nades with tags ${ tags.join(', ') }`)
-  return nades.map(_ => Math.floor(Math.random() * 1000000))
+/*
+exports.saveTags = async (guild, tags, medias) => {
+  console.log(`[Dev] Storing tags ${ tags.join(', ') } for guild ${ guild.id }`)
+  return medias.map(_ => Math.floor(Math.random() * 1000000))
 }
 
-exports.populateLastNadeId = _ => {
-  console.log('[Dev] Populating last nade_id')
-  global.last_nade_id = 30
+exports.populateLastTagId = _ => {
+  console.log('[Dev] Populating last tag_id')
+  global.last_tag_id = 30
   return Promise.resolve()
 }
 
-exports.deleteNadeById = id => {
-  console.log(`[Dev] Deleting nade by id ${ id }`)
-  return Promise.resolve([{ timestamp: new Date().toISOString(), nade_id: id }])
+exports.deleteTagById = (guild, id) => {
+  console.log(`[Dev] Deleting tag by id ${ id } for guild ${ guild.id }`)
+  return Promise.resolve([{ timestamp: new Date().toISOString(), tag_id: id }])
 }
-
+*/
 exports.saveTodo = (user, task) => console.log(`[Dev] Saving TODO task ${ task } for ${ user.username }`)
 
 exports.doTodo = (user, task) => console.log(`[Dev] Marking TODO task ${ task } for ${ user.username } as done`)
