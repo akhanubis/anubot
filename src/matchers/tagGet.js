@@ -2,8 +2,8 @@ const { getTags } = require('../db')
 const { emoji } = require('../utils')
 
 const
-  REGEX = /^\!tag\s+([\s\S]+)$/i,
-  NAME = 'Tag'
+  REGEX = /^\!tagged\s+([\s\S]+)$/i,
+  NAME = 'Get Tag'
 
 exports.name = NAME
 

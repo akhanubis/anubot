@@ -2,7 +2,7 @@ const { saveTags } = require('../db')
 const { emoji } = require('../utils')
 
 const
-  REGEX = /^\!savetag\s+([^\n]+)([\s\S]*)$/i,
+  REGEX = /^\!tag\s+([^\n]+)([\s\S]*)$/i,
   NAME = 'Save Tag',
   URL_REGEX = /https?:\/\/[^\s]+/g
 

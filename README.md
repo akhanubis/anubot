@@ -65,18 +65,18 @@ notes: ez combos for an ez win
 ```
 !poll how cool am I?
 ```
-###### !savetags tag1, tag2, tag3 %LINKS%
-*Stores attachments and external links with the given tags to be able to retrieve them later with !tag.
+###### !tag tag1, tag2, tag3 %LINKS%
+*Stores attachments and external links with the given tags to be able to retrieve them via !tagged.
 Optional multiline command. You can provide the media via attachment or as text after the first line*
 ```
-!savetag ariana grande, music, pop
+!tag ariana grande, music, pop
 https://open.spotify.com/track/2tpIAmAq9orm1Owh5pja1w?si=O7JEs7VQRN27GLCiTC_7Yw
 https://open.spotify.com/track/3wFLWP0FcIqHK1wb1CPthQ?si=Zqm0DRtEQleZsk0dbGfjMw
 ```
-###### !tag tag1,tag2,tag3
-*Retrieves the previously stored media (via !savetags) that matches all the tags provided*
+###### !tagged tag1,tag2,tag3
+*Retrieves the previously stored media (via !tag) that matches all the tags provided*
 ```
-!tag music
+!tagged music
 ```
 ###### !deletetag #a-tag-id
 *Removes the given media and all its tag associations*

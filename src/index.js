@@ -18,7 +18,7 @@ const MATCHERS = [
   'translate',
   'lacqua',
   'poll',
-  'tag',
+  'tagGet',
   'tagSave',
   'tagDelete',
   'todo',
