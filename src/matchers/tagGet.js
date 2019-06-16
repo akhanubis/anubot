@@ -17,6 +17,12 @@ exports.process = async msg => {
   for (let r of records)
     if (r.attachable)
       await msg.channel.send(`#${ r.tag_id }`, { files: [r.url] })
+      .catch(e => {
+        if (e.status === 403)
+          msg.channel.send(`The original attachment message has been deleted ${ emoji('pepothink') }`)
+        else
+          throw(e)
+      })
     else
       await msg.channel.send(`#${ r.tag_id } ${ r.url }`)
 }
