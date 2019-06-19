@@ -1,5 +1,5 @@
 # Anubot
-Discord bot with a bunch of tools as translation, Overwatch match parsin, tagging media system, etc.
+Discord bot with a bunch of tools as translation, Overwatch match parsing, tagging media system, and many more.
 
 
 ## COMMANDS
