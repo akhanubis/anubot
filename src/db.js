@@ -1,7 +1,7 @@
 const { ACCOUNTS_LIST } = require('./constants')
 const { BEANSTALK, MATCHES_TABLE, MATCHES_TABLE_MATCH_ID_INDEX, TAGS_TABLE, TAGS_TABLE_SCANNABLE_INDEX, TAGS_TABLE_GUILD_TAG_ID_INDEX, TODOS_TABLE, TODOS_TABLE_USER_ID_INDEX } = require('./env')
 
-const TODO_MAX_ENTRIES = 15
+const TODO_MAX_ENTRIES = 25
 
 exports.saveMatch = async (match, overriden_id) => {
   let match_common_data = { ...match, match_id: parseInt(overriden_id || next_id()), players: undefined },

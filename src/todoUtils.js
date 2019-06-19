@@ -1,21 +1,20 @@
 const { listTodo } = require('./db')
-const { replaceText } = require('./utils')
+const { replaceText, emoji } = require('./utils')
 
 const
   REPLY = `
 TODO:
 %LIST%
-`,
-  NO_TASKS_REPLY = 'You dont have anything to do! Pat pat pat'
+`
 
 exports.showList = async msg => {
   let tasks = await listTodo(msg.author)
   if (tasks.length)
-    msg.channel.send(replaceText(REPLY, {
-      LIST: tasks.map(t => `${ strike_markdown(t) }${ t.task }${ strike_markdown(t) }`).join("\n")
+    await msg.channel.send(replaceText(REPLY, {
+      LIST: tasks.sort((a, b) => a.done || !b.done ? -1 : 1).map(t => `${ strike_markdown(t) }${ t.task }${ strike_markdown(t) }`).join("\n")
     }))
-  else
-    msg.channel.send(NO_TASKS_REPLY)
+  if (!tasks.filter(t => !t.done).length)
+    msg.channel.send(`You dont have anything to do! ${ emoji('pat') }`)
 }
 
 const strike_markdown = task => task.done ? '~~' : ''
