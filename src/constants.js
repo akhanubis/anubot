@@ -137,6 +137,7 @@ exports.ACTIVITIES = [
   ['my teammates flame me :(', { type: 'LISTENING' }],
   ['a happy song', { type: 'PLAYING' }],
   ['with your heart', { type: 'PLAYING' }],
+  ['with my donger', { type: 'PLAYING' }],
   ['cba\'s instagram feed', { type: 'LISTENING' }],
   ['overwatch league', { type: 'WATCHING' }],
   ['arteezy stream', { type: 'WATCHING' }],
