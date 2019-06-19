@@ -1,4 +1,4 @@
-# the_desert_bot
+# Anubot
 Discord bot with a bunch of tools as translation, Overwatch match parsin, tagging media system, etc.
 
 
