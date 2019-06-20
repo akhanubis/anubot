@@ -8,9 +8,8 @@ if (!process.env.PRODUCTION)
   require('dotenv').config()
 
 const PATCH_NOTES_CHANNELS = [
-  '576035940867244050',
-  //'469168969761161234',
-  //'456598885511593985'
+  '469168969761161234',
+  '456598885511593985'
 ]
 
 const putJobSuccess = (job_id, context) => {
@@ -45,6 +44,7 @@ const broadcastPatchNotes = (code_s3_location, on_success, on_error) => {
       }).promise()
       const source_code = new AdmZip(zipped_code),
             patch_notes = source_code.readAsText('patch_notes')
+      console.log(`Broadcasting to ${ PATCH_NOTES_CHANNELS.length } channels`)
       Promise.all(PATCH_NOTES_CHANNELS.map(id => client.channels.get(id).send(patch_notes)))
       .then(on_success)
     })
