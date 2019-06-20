@@ -3,7 +3,7 @@ const { replaceText, emoji } = require('./utils')
 
 const
   REPLY = `
-TODO:
+TO DO:
 %LIST%
 `
 
