@@ -11,7 +11,11 @@ exports.showList = async msg => {
   let tasks = await listTodo(msg.author)
   if (tasks.length)
     await msg.channel.send(replaceText(REPLY, {
-      LIST: tasks.sort((a, b) => a.done || !b.done ? -1 : 1).map(t => `${ strike_markdown(t) }${ t.task }${ strike_markdown(t) }`).join("\n")
+      LIST: tasks.sort((a, b) => {
+        if (!!a.done === !!b.done)
+          return a.timestamp.localeCompare(b.timestamp)
+        return a.done ? -1 : 1
+      }).map(t => `${ strike_markdown(t) }${ t.task }${ strike_markdown(t) }`).join("\n")
     }))
   if (!tasks.filter(t => !t.done).length)
     msg.channel.send(`You dont have anything to do! ${ emoji('pat') }`)
