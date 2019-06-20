@@ -44,9 +44,13 @@ const broadcastPatchNotes = (code_s3_location, on_success, on_error) => {
       }).promise()
       const source_code = new AdmZip(zipped_code),
             patch_notes = source_code.readAsText('patch_notes')
-      console.log(`Broadcasting to ${ PATCH_NOTES_CHANNELS.length } channels`)
-      Promise.all(PATCH_NOTES_CHANNELS.map(id => client.channels.get(id).send(patch_notes)))
-      .then(on_success)
+      if (patch_notes) {
+        console.log(`Broadcasting to ${ PATCH_NOTES_CHANNELS.length } channels`)
+        await Promise.all(PATCH_NOTES_CHANNELS.map(id => client.channels.get(id).send(patch_notes)))
+      }
+      else
+        console.log('No patch notes found')
+      on_success()
     })
     client.login(process.env.DISCORD_TOKEN)
   }
