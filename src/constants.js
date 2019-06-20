@@ -87,6 +87,7 @@ exports.HEROES_LIST = {
   'ana': 'Ana',
   'ashe': 'Ashe',
   'baptiste': 'Baptiste',
+  'bap': 'Baptiste',
   'bastion': 'Bastion',
   'brigitte': 'Brigitte',
   'brig': 'Brigitte',
@@ -118,14 +119,16 @@ exports.HEROES_LIST = {
   'symmetra': 'Symmetra',
   'torb': 'Torbjörn',
   'torbjorn': 'Torbjörn',
-  'traccer': 'Tracer',
+  'tracer': 'Tracer',
   'widow': 'Widowmaker',
   'widowmaker': 'Widowmaker',
   'winston': 'Winston',
+  'monkey': 'Winston',
   'hammond': 'Wrecking Ball',
   'ball': 'Wrecking Ball',
   'wrecking ball': 'Wrecking Ball',
   'zarya': 'Zarya',
+  'zar': 'Zarya'
   'zen': 'Zenyatta',
   'zenyatta': 'Zenyatta'
 }
@@ -142,7 +145,11 @@ exports.ACTIVITIES = [
   ['overwatch league', { type: 'WATCHING' }],
   ['arteezy stream', { type: 'WATCHING' }],
   ['kanye west', { type: 'LISTENING' }],
-  ['a song of ice and fire', { type: 'LISTENING' }]
+  ['a song of ice and fire', { type: 'LISTENING' }], 
+  ['the game of thrones', {type: 'PLAYING'}], 
+  ['the sunrise', {type: 'WATCHING'}], 
+  ['the sunset', {type: 'WATCHING'}], 
+  ['nightvale radio', { type: 'LISTENING' }],
 ]
 
 exports.PATS = {
