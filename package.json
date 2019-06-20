@@ -9,7 +9,7 @@
     "deploy": "eb deploy"
   },
   "keywords": [],
-  "author": "",
+  "author": "Pablo Bianciotto",
   "license": "ISC",
   "dependencies": {
     "@google-cloud/translate": "^4.0.0",
