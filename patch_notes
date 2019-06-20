@@ -1,11 +1,15 @@
 A new anubot version is here!
+-------------------------------------
 
-**What's new in  1.0.0?**
+**What's new in  1.0.1?**
 
-Added continous integration
-Automatic patch notes on every update (but, why?)
-Changed "TODO" list to "TO DO" (thanks <@421125233970380810>)
-
+```
+• Added continous integration
+• Automatic patch notes on every update (but why?)
+• Changed "TODO" list to "TO DO"
+```
 **Bug fixes**
 
-None, anubot has no bugs
+```
+Bugs? What bugs?
+```
