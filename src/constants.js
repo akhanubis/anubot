@@ -128,7 +128,7 @@ exports.HEROES_LIST = {
   'ball': 'Wrecking Ball',
   'wrecking ball': 'Wrecking Ball',
   'zarya': 'Zarya',
-  'zar': 'Zarya'
+  'zar': 'Zarya',
   'zen': 'Zenyatta',
   'zenyatta': 'Zenyatta'
 }
