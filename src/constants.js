@@ -48,8 +48,8 @@ exports.ACCOUNTS_LIST = {
   'ramanujan': 'Ramanujan',
   'pablo': 'Pablo',
   'traianus': 'Traianus',
-  'ahura': 'AhuraMahzda',
-  'ahuramahzda': 'AhuraMahzda',
+  'bokchoy': 'Bokchoy',
+  'bok': 'Bokchoy',
   'milk': 'Milk',
   'ninjin': 'Ninjin',
   'lola': 'Lola',
@@ -68,18 +68,20 @@ exports.ACCOUNTS_LIST = {
   'goofygoober': 'GoofyGoober',
   'goofy': 'GoofyGoober',
   'goober': 'GoofyGoober',
-  'speedy': 'Speedy'
+  'speedy': 'Speedy',
+  'katacola': 'Katacola',
+  'kata': 'Katacola'
 }
 
 exports.PLAYERS_LIST = {
   'Pablo': ['Ramanujan', 'Pablo', 'Traianus'],
-  'Ninjin': ['AhuraMahzda', 'Milk', 'Ninjin', 'Lola'],
+  'Ninjin': ['Bokchoy', 'Milk', 'Ninjin', 'Lola'],
   'Robo': ['Robogeeker', 'Dwon'],
   'Coyce': ['Coyce'],
   'Neon': ['NeonXD'],
   'Bats': ['Trutututu'],
   'Freestyle': ['Freestyle'],
-  'Kat': ['Kat', 'Dinkleberg!', 'Speedy'],
+  'Kat': ['Kat', 'Dinkleberg!', 'Speedy', 'Katacola'],
   'Goober': ['GoofyGoober']
 }
 
