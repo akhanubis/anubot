@@ -75,13 +75,13 @@ exports.ACCOUNTS_LIST = {
 
 exports.PLAYERS_LIST = {
   'Pablo': ['Ramanujan', 'Pablo', 'Traianus'],
-  'Ninjin': ['AhuraMahzda', 'Milk', 'Ninjin', 'Lola'],
+  'Ninjin': ['Bokchoy', 'Milk', 'Ninjin', 'Lola'],
   'Robo': ['Robogeeker', 'Dwon'],
   'Coyce': ['Coyce'],
   'Neon': ['NeonXD'],
   'Bats': ['Trutututu'],
   'Freestyle': ['Freestyle'],
-  'Kat': ['Kat', 'Dinkleberg!', 'Speedy'],
+  'Kat': ['Kat', 'Dinkleberg!', 'Speedy', 'Katacola'],
   'Goober': ['GoofyGoober']
 }
 
