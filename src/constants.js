@@ -48,8 +48,8 @@ exports.ACCOUNTS_LIST = {
   'ramanujan': 'Ramanujan',
   'pablo': 'Pablo',
   'traianus': 'Traianus',
-  'ahura': 'AhuraMahzda',
-  'ahuramahzda': 'AhuraMahzda',
+  'bokchoy': 'Bokchoy',
+  'bok': 'Bokchoy',
   'milk': 'Milk',
   'ninjin': 'Ninjin',
   'lola': 'Lola',
@@ -68,7 +68,9 @@ exports.ACCOUNTS_LIST = {
   'goofygoober': 'GoofyGoober',
   'goofy': 'GoofyGoober',
   'goober': 'GoofyGoober',
-  'speedy': 'Speedy'
+  'speedy': 'Speedy',
+  'katacola': 'Katacola',
+  'kata': 'Katacola'
 }
 
 exports.PLAYERS_LIST = {
