@@ -152,6 +152,8 @@ exports.ACTIVITIES = [
   ['the sunrise', {type: 'WATCHING'}], 
   ['the sunset', {type: 'WATCHING'}], 
   ['nightvale radio', { type: 'LISTENING' }],
+  ['with manquito :)', {type: 'PLAYING'}],
+  ['with cactus :)', {type: 'PLAYING'}]
 ]
 
 exports.PATS = {
