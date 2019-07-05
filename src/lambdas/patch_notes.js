@@ -9,7 +9,7 @@ if (!process.env.PRODUCTION)
 
 const PATCH_NOTES_CHANNELS = [
   '469168969761161234',
-  '456598885511593985'
+  '496828930121269258'
 ]
 
 const putJobSuccess = (job_id, context) => {
