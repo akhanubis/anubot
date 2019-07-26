@@ -103,6 +103,7 @@ exports.HEROES_LIST = {
   'junk': 'Junkrat',
   'junkrat': 'Junkrat',
   'lucio': 'Lúcio',
+  'lúcio': 'Lúcio',
   'mccree': 'McCree',
   'mei': 'Mei',
   'mercy': 'Mercy',
