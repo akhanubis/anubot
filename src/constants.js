@@ -61,6 +61,8 @@ exports.ACCOUNTS_LIST = {
   'trutututu': 'Trutututu',
   'bats': 'Trutututu',
   'freestyle': 'Freestyle',
+  'sorrume': 'Sorrume',
+  'sorru': 'Sorrume',
   'kat': 'Kat',
   'kat!': 'Kat',
   'dinkle': 'Dinkleberg!',
@@ -80,7 +82,7 @@ exports.PLAYERS_LIST = {
   'Coyce': ['Coyce'],
   'Neon': ['NeonXD'],
   'Bats': ['Trutututu'],
-  'Freestyle': ['Freestyle'],
+  'Freestyle': ['Freestyle', 'Sorrume'],
   'Kat': ['Kat', 'Dinkleberg!', 'Speedy', 'Katacola'],
   'Goober': ['GoofyGoober']
 }
@@ -115,6 +117,7 @@ exports.HEROES_LIST = {
   'reinhardt': 'Reinhardt',
   'hog': 'Roadhog',
   'roadhog': 'Roadhog',
+  'sigma': 'Sigma',
   'soldier': 'Soldier: 76',
   'soldier 76': 'Soldier: 76',
   'sombra': 'Sombra',
