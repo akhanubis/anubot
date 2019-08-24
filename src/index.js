@@ -24,7 +24,8 @@ const MATCHERS = [
   'todo',
   'todoDone',
   'channelMessage',
-  'jajaja'
+  'jajaja',
+  'voice'
 ].map(f => require(`./matchers/${ f }`))
 
 global.last_recorded_sr = {}
