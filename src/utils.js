@@ -31,3 +31,5 @@ exports.previousMessages = (msg, limit = 10) => msg.channel.fetchMessages({ limi
 exports.onCooldown = (last_time_run, cd_in_seconds) => last_time_run && moment.utc().diff(last_time_run, 'seconds') < cd_in_seconds
 
 exports.now = _ => moment.utc()
+
+exports.getAttachments = msg => [...(msg.attachments || { values: [] }).values()]

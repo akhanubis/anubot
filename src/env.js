@@ -21,5 +21,6 @@ module.exports = {
   TODOS_TABLE_USER_ID_INDEX: process.env.TODOS_TABLE_USER_ID_INDEX,
   GOOGLE_CLIENT_EMAIL: process.env.GOOGLE_CLIENT_EMAIL,
   GOOGLE_PRIVATE_KEY: process.env.GOOGLE_PRIVATE_KEY.replace(/__NEW_LINE__/g, "\n"),
-  GOOGLE_PROJECT_ID: process.env.GOOGLE_PROJECT_ID
+  GOOGLE_PROJECT_ID: process.env.GOOGLE_PROJECT_ID,
+  ASSETS_BUCKET_DOMAIN: `https://${ process.env.S3_BUCKET }.s3.amazonaws.com`
 }
