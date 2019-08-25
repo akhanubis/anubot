@@ -7,11 +7,11 @@ exports.initAWS = _ => {
     AWS.config.update({
       accessKeyId: AWS_ACCESS_KEY_ID,
       secretAccessKey: AWS_SECRET_ACCESS_KEY,
-      region: AWS_REGION,
-      endpoint: `https://dynamodb.${ AWS_REGION }.amazonaws.com`
+      region: AWS_REGION
     })
   }
   global.db = new AWS.DynamoDB.DocumentClient()
+  global.s3 = new AWS.S3()
 }
 
 exports.initGoogle = _ => {
