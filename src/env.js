@@ -23,5 +23,6 @@ module.exports = {
   GOOGLE_PRIVATE_KEY: process.env.GOOGLE_PRIVATE_KEY.replace(/__NEW_LINE__/g, "\n"),
   GOOGLE_PROJECT_ID: process.env.GOOGLE_PROJECT_ID,
   ASSETS_BUCKET: process.env.S3_BUCKET,
-  ASSETS_BUCKET_DOMAIN: `https://${ process.env.S3_BUCKET }.s3.amazonaws.com`
+  ASSETS_BUCKET_DOMAIN: `https://${ process.env.S3_BUCKET }.s3.amazonaws.com`,
+  BOT_ID: `${ process.env.BOT_ID }`
 }

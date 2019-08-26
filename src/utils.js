@@ -26,10 +26,14 @@ exports.delayedDelete = m => {
 
 exports.replaceText = (text, replacements) => Object.entries(replacements).reduce((replaced, [k, v]) => replaced.replace(`%${ k }%`, v), text)
 
-exports.previousMessages = (msg, limit = 10) => msg.channel.fetchMessages({ limit: limit, before: msg.id })
+exports.previousMessages = (msg, limit = 10) => msg.channel.messages.fetch({ limit: limit, before: msg.id }).then(a => exports.toArray(a))
+
+exports.latestMessages = (channel, limit = 10) => channel.messages.fetch({ limit: limit }).then(a => exports.toArray(a))
 
 exports.onCooldown = (last_time_run, cd_in_seconds) => last_time_run && moment.utc().diff(last_time_run, 'seconds') < cd_in_seconds
 
 exports.now = _ => moment.utc()
 
-exports.getAttachments = msg => [...(msg.attachments || { values: [] }).values()]
+exports.getAttachments = msg => exports.toArray(msg.attachments || { values: [] })
+
+exports.toArray = col => [...col.values()]

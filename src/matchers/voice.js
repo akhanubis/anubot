@@ -1,17 +1,19 @@
 const ytdl = require('ytdl-core')
-const { ASSETS_BUCKET_DOMAIN, ASSETS_BUCKET } = require('../env')
-const { emoji, getAttachments } = require('../utils')
+const { ASSETS_BUCKET_DOMAIN, ASSETS_BUCKET, BOT_ID } = require('../env')
+const { emoji, getAttachments, latestMessages } = require('../utils')
 
 const
   REGEX = /^\!play(\s+([^\n]+))?$/i,
   NAME = 'Voice Test',
-  ON_IDLE_TIMEOUT = 300000
+  ON_IDLE_TIMEOUT = 300000,
+  NOW_PLAYING = {},
+  QUEUE = {},
+  LAST_TEXT_CHANNEL = {},
+  LEAVE_TIMEOUT = {}
 
 exports.name = NAME
 
 exports.regex = REGEX 
-
-let leave_timeout
 
 const get_cached_video = async youtube_id => {
   const result = await global.s3.listObjectsV2({
@@ -34,41 +36,77 @@ const save_to_cache = (youtube_id, media) => {
     }).promise()
     .then(_ => {
       console.log('Video stored in cache')
-      buffers = []
+      buffers.splice(0, buffers.length)
     })
   })
+  return media
+}
+
+const play_next = async guild_id => {
+  const next_song = QUEUE[guild_id].shift()
+  if (!next_song) {
+    NOW_PLAYING[guild_id] = null
+    const current_voice_channel = (global.client.voice.connections[guild_id] || {}).channel
+    if (current_voice_channel)
+      LEAVE_TIMEOUT[guild_id] = setTimeout(_ => current_voice_channel.leave(), ON_IDLE_TIMEOUT)
+    return
+  }
+  const { attachment, filename, voice_channel } = next_song
+  let media, media_name
+  if (attachment) {
+    media_name = attachment.name
+    media = attachment.url
+  }
+  else if (ytdl.validateURL(filename)) {
+    const yt_id = ytdl.getVideoID(filename),
+          [cached_video, basic_info] = await Promise.all([
+            get_cached_video(yt_id),
+            ytdl.getBasicInfo(yt_id)
+          ])
+    media_name = basic_info.title
+    media = cached_video || save_to_cache(yt_id, ytdl(filename, { quality: 'highestaudio' }))
+  }
+  else {
+    media_name = filename
+    media = `${ ASSETS_BUCKET_DOMAIN }/sounds/${ guild_id }/${ filename }.mp3`
+  }
+  clearTimeout(LEAVE_TIMEOUT[guild_id])
+  const connection = await voice_channel.join()
+  NOW_PLAYING[guild_id] = media_name
+  const now_playing_text = `Now playing ${ NOW_PLAYING[guild_id] }\n${ QUEUE[guild_id].length } song${ QUEUE[guild_id].length === 1 ? '' : 's' } left in queue`
+  console.log(now_playing_text)
+  const last_message = (await latestMessages(LAST_TEXT_CHANNEL[guild_id], 1))[0]
+  if (last_message.author.id === BOT_ID && last_message.content.match(/^Now playing/))
+    last_message.edit(now_playing_text)
+  else
+    LAST_TEXT_CHANNEL[guild_id].send(now_playing_text)
+  const dispatcher = connection.play(media)
+  dispatcher.once('end', _ => play_next(guild_id))
 }
 
 exports.process = async msg => {
   const voice_channel = msg.member.voice.channel,
+        text_channel = msg.channel,
+        guild_id = text_channel.guild.id,
         filename = (msg.content.match(REGEX)[2] || '').trim(),
         attachment = getAttachments(msg)[0]
   if (!voice_channel) {
-    msg.channel.send(`You are not in a voice channel ${ emoji('pepothink') }`)
+    text_channel.send(`You are not in a voice channel ${ emoji('pepothink') }`)
     return
   }
   if (!(attachment || filename)) {
-    msg.channel.send(`Missing media ${ emoji('pepothink') }`)
+    text_channel.send(`Missing media ${ emoji('pepothink') }`)
     return
   }
-
-  let media, media_name
-  if (attachment)
-    media = attachment.url
-  else if (ytdl.validateURL(filename)) {
-    const yt_id = ytdl.getVideoID(filename),
-          cached_video = await get_cached_video(yt_id)
-    media = cached_video || ytdl(filename, { quality: 'highestaudio' })
-    if (!cached_video) {
-      media_name = `YT ${ yt_id }`
-      save_to_cache(yt_id, media)
-    }
-  }
+  QUEUE[guild_id] = QUEUE[guild_id] || []
+  QUEUE[guild_id].push({
+    attachment: attachment,
+    filename: filename,
+    voice_channel: voice_channel
+  })
+  LAST_TEXT_CHANNEL[guild_id] = text_channel
+  if (NOW_PLAYING[guild_id])
+    console.log('Song queued', (attachment || {}).url || filename)
   else
-    media = `${ ASSETS_BUCKET_DOMAIN }/sounds/${ msg.channel.guild.id }/${ filename }.mp3`
-  console.log('Playing', media_name || media)
-  clearTimeout(leave_timeout)
-  const connection = await voice_channel.join()
-  connection.play(media)
-  leave_timeout = setTimeout(_ => voice_channel.leave(), ON_IDLE_TIMEOUT)
+    await play_next(guild_id)
 }

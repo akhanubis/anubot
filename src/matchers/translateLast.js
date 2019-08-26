@@ -11,7 +11,7 @@ exports.name = NAME
 exports.regex = REGEX
 
 exports.process = async msg => {
-  let prev_messages = Array.from((await previousMessages(msg)).values()),
+  let prev_messages = await previousMessages(msg),
       dm = msg.content.match(REGEX)[1],
       last_author = prev_messages[0].author.id
       last_same_author = []
