@@ -9,6 +9,7 @@ const
   NOW_PLAYING = {},
   QUEUE = {},
   LAST_TEXT_CHANNEL = {},
+  LAST_VOICE_CHANNEL = {},
   LEAVE_TIMEOUT = {}
 
 exports.name = NAME
@@ -42,6 +43,8 @@ const save_to_cache = (youtube_id, media) => {
   return media
 }
 
+const queue_left_text = guild_id => `${ QUEUE[guild_id].length } song${ QUEUE[guild_id].length === 1 ? '' : 's' } left in queue`
+
 const play_next = async guild_id => {
   const next_song = QUEUE[guild_id].shift()
   if (!next_song) {
@@ -51,29 +54,21 @@ const play_next = async guild_id => {
       LEAVE_TIMEOUT[guild_id] = setTimeout(_ => current_voice_channel.leave(), ON_IDLE_TIMEOUT)
     return
   }
-  const { attachment, filename, voice_channel } = next_song
-  let media, media_name
-  if (attachment) {
-    media_name = attachment.name
+  const { attachment, filename, media_name } = next_song
+  let media
+  if (attachment)
     media = attachment.url
-  }
   else if (ytdl.validateURL(filename)) {
     const yt_id = ytdl.getVideoID(filename),
-          [cached_video, basic_info] = await Promise.all([
-            get_cached_video(yt_id),
-            ytdl.getBasicInfo(yt_id)
-          ])
-    media_name = basic_info.title
+          cached_video = await get_cached_video(yt_id)
     media = cached_video || save_to_cache(yt_id, ytdl(filename, { quality: 'highestaudio' }))
   }
-  else {
-    media_name = filename
+  else
     media = `${ ASSETS_BUCKET_DOMAIN }/sounds/${ guild_id }/${ filename }.mp3`
-  }
   clearTimeout(LEAVE_TIMEOUT[guild_id])
-  const connection = await voice_channel.join()
+  const connection = await LAST_VOICE_CHANNEL[guild_id].join()
   NOW_PLAYING[guild_id] = media_name
-  const now_playing_text = `Now playing ${ NOW_PLAYING[guild_id] }\n${ QUEUE[guild_id].length } song${ QUEUE[guild_id].length === 1 ? '' : 's' } left in queue`
+  const now_playing_text = `Now playing ${ NOW_PLAYING[guild_id] }\n${ queue_left_text(guild_id) }`
   console.log(now_playing_text)
   const last_message = (await latestMessages(LAST_TEXT_CHANNEL[guild_id], 1))[0]
   if (last_message.author.id === BOT_ID && last_message.content.match(/^Now playing/))
@@ -82,6 +77,16 @@ const play_next = async guild_id => {
     LAST_TEXT_CHANNEL[guild_id].send(now_playing_text)
   const dispatcher = connection.play(media)
   dispatcher.once('end', _ => play_next(guild_id))
+}
+
+const parse_media_name = async (attachment, filename) => {
+  if (attachment) 
+    return attachment.name
+  if (ytdl.validateURL(filename)) {
+    const basic_info = await ytdl.getBasicInfo(filename)
+    return basic_info.title
+  }
+  return filename
 }
 
 exports.process = async msg => {
@@ -98,15 +103,20 @@ exports.process = async msg => {
     text_channel.send(`Missing media ${ emoji('pepothink') }`)
     return
   }
+  const media_name = await parse_media_name(attachment, filename)
   QUEUE[guild_id] = QUEUE[guild_id] || []
   QUEUE[guild_id].push({
     attachment: attachment,
     filename: filename,
-    voice_channel: voice_channel
+    media_name
   })
   LAST_TEXT_CHANNEL[guild_id] = text_channel
-  if (NOW_PLAYING[guild_id])
-    console.log('Song queued', (attachment || {}).url || filename)
+  LAST_VOICE_CHANNEL[guild_id] = voice_channel
+  if (NOW_PLAYING[guild_id]) {
+    const queued_text = `Queued ${ media_name }\n${ queue_left_text(guild_id) }`
+    console.log(queued_text)
+    text_channel.send(queued_text)
+  }
   else
     await play_next(guild_id)
 }
