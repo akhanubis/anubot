@@ -1,11 +1,10 @@
 const ytdl = require('ytdl-core')
-const { ASSETS_BUCKET_DOMAIN, ASSETS_BUCKET, BOT_ID } = require('../env')
+const { ASSETS_BUCKET_DOMAIN, ASSETS_BUCKET, BOT_ID, ON_VOICE_IDLE_TIMEOUT_IN_S } = require('../env')
 const { emoji, getAttachments, latestMessages } = require('../utils')
 
 const
   REGEX = /^\!play(\s+([^\n]+))?$/i,
   NAME = 'Voice Test',
-  ON_IDLE_TIMEOUT = 300000,
   NOW_PLAYING = {},
   QUEUE = {},
   LAST_TEXT_CHANNEL = {},
@@ -49,9 +48,12 @@ const play_next = async guild_id => {
   const next_song = QUEUE[guild_id].shift()
   if (!next_song) {
     NOW_PLAYING[guild_id] = null
-    const current_voice_channel = (global.client.voice.connections[guild_id] || {}).channel
+    const current_voice_channel = (global.client.voice.connections.get(guild_id) || {}).channel
     if (current_voice_channel)
-      LEAVE_TIMEOUT[guild_id] = setTimeout(_ => current_voice_channel.leave(), ON_IDLE_TIMEOUT)
+      LEAVE_TIMEOUT[guild_id] = setTimeout(_ => {
+        current_voice_channel.leave()
+        LAST_TEXT_CHANNEL[guild_id].send("Ok, it looks like I'm not needed anymore :( Anubot out")
+      }, ON_VOICE_IDLE_TIMEOUT_IN_S * 1000)
     return
   }
   const { attachment, filename, media_name } = next_song

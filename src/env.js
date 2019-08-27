@@ -24,5 +24,6 @@ module.exports = {
   GOOGLE_PROJECT_ID: process.env.GOOGLE_PROJECT_ID,
   ASSETS_BUCKET: process.env.S3_BUCKET,
   ASSETS_BUCKET_DOMAIN: `https://${ process.env.S3_BUCKET }.s3.amazonaws.com`,
-  BOT_ID: `${ process.env.BOT_ID }`
+  BOT_ID: `${ process.env.BOT_ID }`,
+  ON_VOICE_IDLE_TIMEOUT_IN_S: process.env.ON_VOICE_IDLE_TIMEOUT_IN_S || 300
 }
