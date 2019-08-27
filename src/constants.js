@@ -218,3 +218,8 @@ exports.PUBLIC_CONSTANTS = {
   heroes: exports.HEROES_LIST,
   maps: exports.MAPS_LIST
 }
+
+exports.MONITORED_GUILDS = {
+  '574791914038099971': '574791914038099984', /* aula */
+  '453626383088746526': '616012981909586142' /* desert */
+}

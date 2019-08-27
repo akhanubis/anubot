@@ -4,6 +4,7 @@ const { initAWS, initGoogle } = require('./startup')
 const { populateLastSr, populateLastId, populateLastTagId } = require('./db')
 const { setActivity, emoji } = require('./utils')
 const { ERROR_EMOJI, SUCCESS_EMOJI } = require('./constants')
+const { setupMonitoring } = require('./monitor.js')
 
 const MATCHERS = [
   'match',
@@ -67,6 +68,7 @@ const m = async _ => {
         break
       }
   })
+  setupMonitoring()
   global.client.login(DISCORD_TOKEN)
 }
 
