@@ -1,14 +1,18 @@
 A new version of anubot is here!
 -------------------------------------
 
-**What's new in  1.0.5?**
+**What's new in  1.1.0?**
 
 ```
-• Added Sigma
-• Added Sorrume
+• !play command. Play/queue your favorite artists songs via YouTube or attachments. Includes a cache system por people that like listening to the same 10 songs everyday
+• Revamped the whole codebase so expect things to be broken
+```
+**What's next?**
+```
+• Spotify and YT playlists support with !play command
+• !next, !previous, !stop, !seek, etc
 ```
 **Bug fixes**
-
 ```
 Bugs? What bugs?
 ```
