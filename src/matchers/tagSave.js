@@ -1,5 +1,5 @@
 const { saveTags } = require('../db')
-const { emoji } = require('../utils')
+const { emoji, getAttachments } = require('../utils')
 
 const
   REGEX = /^\!tag\s+([^\n]+)([\s\S]*)$/i,
@@ -12,7 +12,7 @@ exports.regex = REGEX
 
 exports.process = async msg => {
   let tags = msg.content.match(REGEX)[1].split(',').map(t => t.trim()).filter(t => t),
-      attachments = (msg.attachments || []).map(a => ({ url: a.url, attachable: true })),
+      attachments = getAttachments(msg).map(a => ({ url: a.url, attachable: true })),
       extra_attachments = (msg.content.match(REGEX)[2].trim().match(URL_REGEX) || []).map(a => ({ url: a, attachable: false })),
       medias = [...attachments, ...extra_attachments]
   if (!tags.length)
