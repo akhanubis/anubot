@@ -24,7 +24,10 @@ const get_cached_video = async youtube_id => {
     return `${ ASSETS_BUCKET_DOMAIN }/${ result.Contents[0].Key }`
 }
 
-const save_to_cache = (youtube_id, media) => {
+const save_to_cache = (youtube_id, media, guild_id) => {
+  /* bot just joined, skip saving */
+  if (!get_current_channel(guild_id))
+    return media
   const buffers = []
   media.on('data', chunk => buffers.push(chunk))
   media.on('end', _ => {
@@ -44,16 +47,24 @@ const save_to_cache = (youtube_id, media) => {
 
 const queue_left_text = guild_id => `${ QUEUE[guild_id].length } song${ QUEUE[guild_id].length === 1 ? '' : 's' } left in queue`
 
+const get_current_channel = guild_id => (global.client.voice.connections.get(guild_id) || {}).channel
+
+const on_queue_end = guild_id => {
+  NOW_PLAYING[guild_id] = null
+  LEAVE_TIMEOUT[guild_id] = setTimeout(_ => {
+    const vc = get_current_channel(guild_id)
+    if (vc) {
+      vc.leave()
+      LAST_TEXT_CHANNEL[guild_id].send("Ok, it looks like I'm not needed anymore :( Anubot out")
+    }
+  }, ON_VOICE_IDLE_TIMEOUT_IN_S * 1000)
+}
+
 const play_next = async guild_id => {
+  clearTimeout(LEAVE_TIMEOUT[guild_id])
   const next_song = QUEUE[guild_id].shift()
   if (!next_song) {
-    NOW_PLAYING[guild_id] = null
-    const current_voice_channel = (global.client.voice.connections.get(guild_id) || {}).channel
-    if (current_voice_channel)
-      LEAVE_TIMEOUT[guild_id] = setTimeout(_ => {
-        current_voice_channel.leave()
-        LAST_TEXT_CHANNEL[guild_id].send("Ok, it looks like I'm not needed anymore :( Anubot out")
-      }, ON_VOICE_IDLE_TIMEOUT_IN_S * 1000)
+    on_queue_end(guild_id)
     return
   }
   const { attachment, filename, media_name } = next_song
@@ -63,11 +74,10 @@ const play_next = async guild_id => {
   else if (ytdl.validateURL(filename)) {
     const yt_id = ytdl.getVideoID(filename),
           cached_video = await get_cached_video(yt_id)
-    media = cached_video || save_to_cache(yt_id, ytdl(filename, { quality: 'highestaudio' }))
+    media = cached_video || save_to_cache(yt_id, ytdl(filename, { quality: 'highestaudio' }), guild_id)
   }
   else
     media = `${ ASSETS_BUCKET_DOMAIN }/sounds/${ guild_id }/${ filename }.mp3`
-  clearTimeout(LEAVE_TIMEOUT[guild_id])
   const connection = await LAST_VOICE_CHANNEL[guild_id].join()
   NOW_PLAYING[guild_id] = media_name
   const now_playing_text = `Now playing ${ NOW_PLAYING[guild_id] }\n${ queue_left_text(guild_id) }`
