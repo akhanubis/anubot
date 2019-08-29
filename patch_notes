@@ -1,12 +1,34 @@
 A new version of anubot is here!
 -------------------------------------
 
-**What's new in  1.1.1?**
+Apollo update is focused in providing the ultimate listening experience: more queue related commands, better audio quality, Spotify and YT support, and a few QoL improvements
+
+**What's new in  1.2.0?**
 
 ```
-• Some backend stuff
+• Added support for Spotify artists, playlists, tracks and albums to the !play command (e. g. !play https://open.spotify.com/playlist/0hDp1l2gfmaLY6SSZNOWHf?si=u7ICuWZLRMKMxW6-QBWleg)
+• Added support for YouTube search by keywords to the !play command (e. g. !play 7 rings ariana)
+• Added !next command which skips the current song
+• Added !stop command which stops the currently playing song and clears the queue
+• Added !queue command which prints out the currently playing song and a list of queued songs
+• Added song related command shortcuts (!p => !play, !n => !next, !s => !stop, !q => !queue)
+• Added !queue command as an alias for !play when called with extra arguments
+• Fixed a bug where the first song played right after anubot joined a voice channel wasnt playing any sound
+• Added some super secret administrator stuff
 ```
 **Known issues**
 ```
-• !play skips the first song under some circumstances
+• Special characters are being incorrectly encoded when printing the current queue status
+```
+**What's next?**
+```
+• !seek and !volume controls
+• Soundboard related commands and UI
+```
+**Want to contribute?**
+```
+• https://github.com/akhanubis/anubot
+• BTC: bc1qnzewvz5fr5290qwv0sfgv7pm20skf839daxsxl
+• BCH: qqvhlx4j5esy6vum8hvgv593lxcx89yavquvdhz5tq
+• ETH: 0x38B7F42EBC6Df0bbfdE6afb8C860847C3D169307
 ```
