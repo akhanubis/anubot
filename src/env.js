@@ -25,5 +25,9 @@ module.exports = {
   ASSETS_BUCKET: process.env.S3_BUCKET,
   ASSETS_BUCKET_DOMAIN: `https://${ process.env.S3_BUCKET }.s3.amazonaws.com`,
   BOT_ID: `${ process.env.BOT_ID }`,
-  ON_VOICE_IDLE_TIMEOUT_IN_S: process.env.ON_VOICE_IDLE_TIMEOUT_IN_S || 300
+  ON_VOICE_IDLE_TIMEOUT_IN_S: process.env.ON_VOICE_IDLE_TIMEOUT_IN_S || 300,
+  GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
+  SPOTIFY_CLIENT_ID: process.env.SPOTIFY_CLIENT_ID,
+  SPOTIFY_CLIENT_SECRET: process.env.SPOTIFY_CLIENT_SECRET,
+  YOUTUBE_REGION_CODE: process.env.YOUTUBE_REGION_CODE
 }
