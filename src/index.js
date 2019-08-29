@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const { DISCORD_TOKEN, ACTIVITY_REFRESH_INTERVAL_IN_S, ALLOWED_SERVERS, ALLOWED_DM_USERS } = require('./env')
-const { initAWS, initGoogle } = require('./startup')
+const { initAWS, initGoogle, initSpotify } = require('./startup')
 const { populateLastSr, populateLastId, populateLastTagId } = require('./db')
 const { setActivity, emoji } = require('./utils')
 const { ERROR_EMOJI, SUCCESS_EMOJI } = require('./constants')
@@ -26,7 +26,10 @@ const MATCHERS = [
   'todoDone',
   'channelMessage',
   'jajaja',
-  'voice'
+  'music/play',
+  'music/next',
+  'music/stop',
+  'music/sound'
 ].map(f => require(`./matchers/${ f }`))
 
 global.last_recorded_sr = {}
@@ -34,6 +37,7 @@ global.client = new Discord.Client()
 const m = async _ => {
   initAWS()
   initGoogle()
+  initSpotify()
   await Promise.all([populateLastSr(), populateLastId(), populateLastTagId()])
   console.log(`Last recorded SR: ${ Object.entries(global.last_recorded_sr).map(([a, b]) => `${ a }: ${ b }`).join(', ') }`)
   console.log(`Last recorded match_id: ${ global.last_id }`)
