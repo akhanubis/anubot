@@ -1,4 +1,5 @@
 const ytdl = require('ytdl-core')
+const cheerio = require('cheerio')
 const { ASSETS_BUCKET_DOMAIN, ASSETS_BUCKET, BOT_ID, ON_VOICE_IDLE_TIMEOUT_IN_S, YOUTUBE_REGION_CODE } = require('../../env')
 const { emoji, latestMessages, htmlUnescape } = require('../../utils')
 const { getSpotifyTracks } = require('../../spotify')
@@ -223,12 +224,17 @@ exports.pauseOrResume = (guild_id, command) => {
 }
 
 exports.getLyrics = async (artist, title) => {
-  const result = await axios.get(`https://www.azlyrics.com/lyrics/${ artist.toLowerCase().replace(/[^a-z0-9]+/g, '') }/${ title.toLowerCase().replace(/[^a-z0-9]+/g, '') }.html`).catch(e => {
-    console.log(e)
-    return { data: '' }
-  }),
-        lyrics = (result.data.match(/Sorry about that\. -->(.+?)<\/div>/is) || [])[1]
-  if (!lyrics)
+  const path = `${ artist }-${ title }-lyrics`.toLowerCase().replace(/ñ/g, 'n').replace(/[\s-]+/g, '-').replace(/[^-a-z0-9]+/g, ''),
+        result = await axios.get(`https://genius.com/${ path }`).catch(console.log)
+  console.log('Fetching lyrics from ', path)
+  if (!result)
     return
-  return htmlUnescape(lyrics.replace(/<br>/g, "\n").replace(/\n\n/g, "\n").replace(/\]?<\/?i>\[?/g, '**'))
+  const parser = cheerio.load(result.data)
+  parser('.lyrics a').each(function() {
+    parser(this).replaceWith(parser(this).html())
+  })
+  let html = parser('.lyrics').html()
+  html = ['<!--sse-->', '<!--/sse-->', '<p>', '</p>'].reduce((out, to_remove) => out.replace(to_remove, ''), html)
+  html = html.replace(/<\/?i>/g, '*').replace(/<\/?b>/g, '**').replace(/<br>/g, "\n").replace(/\n\n/g, "\n").trim()
+  return htmlUnescape(html)
 }

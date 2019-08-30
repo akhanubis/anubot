@@ -5,7 +5,8 @@ const { keywordsToTrack } = require('../../spotify')
 const
   REGEX = /^\!lyrics(\s+([^\n]+))?$/i,
   NAME = 'Music Lyrics',
-  MAX_LYRICS_SIZE = 1800
+  MAX_LYRICS_SIZE = 1900,
+  SPLIT_SIZE = 1500
 
 exports.name = NAME
 
@@ -32,7 +33,7 @@ exports.process = async msg => {
   if (lyrics) {
     let chunks
     if (lyrics.length > MAX_LYRICS_SIZE) {
-      const split_index = MAX_LYRICS_SIZE + lyrics.substr(MAX_LYRICS_SIZE).indexOf("\n\n")
+      const split_index = SPLIT_SIZE + lyrics.substr(SPLIT_SIZE).indexOf("\n\n")
       chunks = [lyrics.substr(0, split_index), lyrics.substr(split_index)]
     }
     else
