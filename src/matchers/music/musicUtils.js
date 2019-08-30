@@ -138,11 +138,12 @@ exports.playNext = async guild_id => {
         dispatcher = connection.play(media)
   dispatcher.setVolume(current_volume(guild_id) / VOLUME_MULTIPLIER)
   dispatcher.once('end', _ => exports.playNext(guild_id))
+  media_name = htmlUnescape(media_name)
   exports.setState(guild_id, { stream: dispatcher, media_name })
 
   const now_playing_text = `>>> Now playing ${ media_name }\n${ queue_left_text(guild_id) }`
   const last_message = (await latestMessages(exports.state(guild_id).last_text_channel, 1))[0]
-  if (last_message.author.id === BOT_ID && last_message.content.match(/^Now playing/)) {
+  if (last_message.author.id === BOT_ID && last_message.content.match(/^>>> Now playing/)) {
     console.log(now_playing_text)
     last_message.edit(now_playing_text)
   }
