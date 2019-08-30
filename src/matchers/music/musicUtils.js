@@ -3,6 +3,9 @@ const { ASSETS_BUCKET_DOMAIN, ASSETS_BUCKET, BOT_ID, ON_VOICE_IDLE_TIMEOUT_IN_S,
 const { emoji, latestMessages } = require('../../utils')
 const { getSpotifyTracks } = require('../../spotify')
 
+const VOLUME_MULTIPLIER = 10,
+      DEFAULT_VOLUME = 10
+
 global.MUSIC_STATE = {}
 
 const get_cached_video = async youtube_id => {
@@ -55,6 +58,14 @@ const search_yt_video = async query => {
   return first_result
 }
 
+const current_volume = guild_id => exports.state(guild_id).volume || DEFAULT_VOLUME
+
+exports.reply = (guild_id, message, log = true) => {
+  if (log)
+    console.log(`[${ guild_id }]`, message)
+  exports.state(guild_id).last_text_channel.send(message)
+}
+
 exports.state = guild_id => global.MUSIC_STATE[guild_id]
 
 exports.setState = (guild_id, new_state) => {
@@ -67,7 +78,7 @@ exports.setLastState = msg => {
         text_channel = msg.channel,
         guild_id = text_channel.guild.id
   if (!voice_channel) {
-    text_channel.send(`You are not in a voice channel ${ emoji('pepothink') }`)
+    text_channel.send(`You are not in a voice channel ${ emoji('peperetarded') }`)
     return
   }
   exports.setState(guild_id, {
@@ -115,7 +126,7 @@ exports.playNext = async guild_id => {
         media_name = result.snippet.title
       }
       else {
-        exports.state(guild_id).last_text_channel.send(`No matching video found for ${ query } ${ emoji('pepothink') }`)
+        exports.reply(guild_id, `No matching video found for ${ query } ${ emoji('pepothink') }`, false)
         exports.playNext(guild_id)
         return
       }
@@ -123,16 +134,18 @@ exports.playNext = async guild_id => {
   }
   const connection = await exports.joinVoice(guild_id),
         dispatcher = connection.play(media)
+  dispatcher.setVolume(current_volume(guild_id) / VOLUME_MULTIPLIER)
   dispatcher.once('end', _ => exports.playNext(guild_id))
   exports.setState(guild_id, { stream: dispatcher, media_name })
 
   const now_playing_text = `Now playing ${ media_name }\n${ queue_left_text(guild_id) }`
-  console.log(now_playing_text)
   const last_message = (await latestMessages(exports.state(guild_id).last_text_channel, 1))[0]
-  if (last_message.author.id === BOT_ID && last_message.content.match(/^Now playing/))
+  if (last_message.author.id === BOT_ID && last_message.content.match(/^Now playing/)) {
+    console.log(now_playing_text)
     last_message.edit(now_playing_text)
+  }
   else
-    exports.state(guild_id).last_text_channel.send(now_playing_text)  
+    exports.reply(guild_id, now_playing_text)
 }
 
 exports.onPlaybackEnd = (guild_id, force) => {
@@ -145,7 +158,7 @@ exports.onPlaybackEnd = (guild_id, force) => {
       if (vc) {
         vc.channel.leave()
         if (!force)
-          exports.state(guild_id).last_text_channel.send("Ok, it looks like I'm not needed anymore :( Anubot out")
+          exports.reply(guild_id, "Ok, it looks like I'm not needed anymore :( Anubot out", false)
       }
     }, force ? 0 : ON_VOICE_IDLE_TIMEOUT_IN_S * 1000)
   })
@@ -159,16 +172,14 @@ exports.showQueue = guild_id => {
     output = `Now playing ${ now_playing }\n${ output }`
   if (q.length)
     output = `${ output }\n\`\`\`\n${ q.map(song => song.media_name).join("\n") }\n\`\`\``
-  console.log(output)
-  exports.state(guild_id).last_text_channel.send(output)
+  exports.reply(guild_id, output)
 }
 
 exports.onPlaySound = guild_id => {
   if (exports.state(guild_id).stream) {
     const q = exports.state(guild_id).queue,
           queued_text = `Queued ${ q[q.length - 1].media_name }\n${ queue_left_text(guild_id) }`
-    console.log(queued_text)
-    exports.state(guild_id).last_text_channel.send(queued_text)
+    exports.reply(guild_id, queued_text)
   }
   else
     exports.playNext(guild_id)
@@ -184,9 +195,28 @@ exports.queueFromSpotify = async (guild_id, url) => {
 
   if (exports.state(guild_id).stream) {
     const queued_text = songs.length === 1 ? `Queued ${ songs[0] }\n${ queue_left_text(guild_id) }` : `Queued ${ songs.length } songs\n${ queue_left_text(guild_id) }`
-    console.log(queued_text)
-    exports.state(guild_id).last_text_channel.send(queued_text)
+    exports.reply(guild_id, queued_text)
   }
   else
     exports.playNext(guild_id)
+}
+
+exports.setVolume = (guild_id, volume) => {
+  const dispatcher = (get_current_voice_connection(guild_id) || {}).dispatcher
+  if (volume !== null) {
+    exports.setState(guild_id, { volume: volume })
+    if (dispatcher)
+      dispatcher.setVolume(volume / VOLUME_MULTIPLIER)
+    exports.reply(guild_id, `Volume set to ${ volume }`)
+  }
+  else
+    exports.reply(guild_id, `Current volume is ${ current_volume(guild_id) }`)
+}
+
+exports.pauseOrResume = (guild_id, command) => {
+  const dispatcher = (get_current_voice_connection(guild_id) || {}).dispatcher
+  if (dispatcher)
+    dispatcher[command]()
+  else
+    exports.reply(guild_id, `I'm not playing anything ${ emoji('peperetarded') }`)
 }

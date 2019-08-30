@@ -30,3 +30,16 @@ exports.getSpotifyTracks = url => {
   if (url.match(/\/playlist\//))
     return get_tracks_by_playlist(url.match(/\/playlist\/([a-zA-Z0-9]+)/)[1])
 }
+
+exports.keywordsToTrack = async keywords => {
+  keywords = keywords.replace(/\([^)]*\)/g, '').trim()
+  const result = await global.spotify.searchTracks(keywords, { limit: 10 }),
+        track = result.body.tracks.items[0]
+  console.log(result.body.tracks.items)
+  if (track)
+    return {
+      title: track.name,
+      artist: track.artists[0].name
+    }
+  return {}
+}
