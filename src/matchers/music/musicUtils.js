@@ -16,7 +16,7 @@ const get_cached_video = async youtube_id => {
 
 const save_to_cache = (youtube_id, media, guild_id) => {
   /* bot just joined, skip saving */
-  if (!get_current_channel(guild_id))
+  if (!get_current_voice_connection(guild_id))
     return media
   const buffers = []
   media.on('data', chunk => buffers.push(chunk))
@@ -35,7 +35,7 @@ const save_to_cache = (youtube_id, media, guild_id) => {
   return media
 }
 
-const get_current_channel = guild_id => (global.client.voice.connections.get(guild_id) || {}).channel
+const get_current_voice_connection = guild_id => global.client.voice.connections.get(guild_id)
 
 const queue_left_text = guild_id => `${ exports.state(guild_id).queue.length } song${ exports.state(guild_id).queue.length === 1 ? '' : 's' } left in queue`
 
@@ -55,7 +55,7 @@ const search_yt_video = async query => {
   return first_result
 }
 
-exports.state = guild_id => global.MUSIC_STATE[guild_id] || {}
+exports.state = guild_id => global.MUSIC_STATE[guild_id]
 
 exports.setState = (guild_id, new_state) => {
   global.MUSIC_STATE[guild_id] = global.MUSIC_STATE[guild_id] || {}
@@ -83,11 +83,18 @@ exports.stopCurrent = guild_id => {
     current_stream.destroy()
 }
 
+exports.joinVoice = async (guild_id, force) => {
+  const current_vc = get_current_voice_connection(guild_id)
+  if (force || !current_vc)
+    return await exports.state(guild_id).last_voice_channel.join()
+  return current_vc
+}
+
 exports.playNext = async guild_id => {
   clearTimeout(exports.state(guild_id).leave_timeout)
-  const next_song = exports.state(guild_id).queue.shift()
+  const next_song = (exports.state(guild_id).queue || []).shift()
   if (!next_song) {
-    exports.onQueueEnd(guild_id)
+    exports.onPlaybackEnd(guild_id)
     return
   }
   let { attachment, filename, query, media_name } = next_song
@@ -114,7 +121,7 @@ exports.playNext = async guild_id => {
       }
     }
   }
-  const connection = await exports.state(guild_id).last_voice_channel.join(),
+  const connection = await exports.joinVoice(guild_id),
         dispatcher = connection.play(media)
   dispatcher.once('end', _ => exports.playNext(guild_id))
   exports.setState(guild_id, { stream: dispatcher, media_name })
@@ -128,18 +135,19 @@ exports.playNext = async guild_id => {
     exports.state(guild_id).last_text_channel.send(now_playing_text)  
 }
 
-exports.onQueueEnd = guild_id => {
+exports.onPlaybackEnd = (guild_id, force) => {
   exports.setState(guild_id, {
     stream: null,
     media_name: null,
     queue: [],
     leave_timeout: setTimeout(_ => {
-      const vc = get_current_channel(guild_id)
+      const vc = get_current_voice_connection(guild_id)
       if (vc) {
-        vc.leave()
-        exports.state(guild_id).last_text_channel.send("Ok, it looks like I'm not needed anymore :( Anubot out")
+        vc.channel.leave()
+        if (!force)
+          exports.state(guild_id).last_text_channel.send("Ok, it looks like I'm not needed anymore :( Anubot out")
       }
-    }, ON_VOICE_IDLE_TIMEOUT_IN_S * 1000)
+    }, force ? 0 : ON_VOICE_IDLE_TIMEOUT_IN_S * 1000)
   })
 }
 
