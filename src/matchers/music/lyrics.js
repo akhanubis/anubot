@@ -1,33 +1,47 @@
-const { state, setLastState, reply } = require('./musicUtils')
+const { state, setLastState, reply, getLyrics } = require('./musicUtils')
 const { emoji } = require('../../utils')
 const { keywordsToTrack } = require('../../spotify')
-const { getLyrics } = require('../../genius')
 
 const
   REGEX = /^\!lyrics(\s+([^\n]+))?$/i,
-  NAME = 'Music Lyrics'
+  NAME = 'Music Lyrics',
+  MAX_LYRICS_SIZE = 1800
 
 exports.name = NAME
 
 exports.regex = REGEX 
 
 exports.process = async msg => {
-  const guild_id = setLastState(msg)
-  if (guild_id) {
-    const keywords = (msg.content.match(REGEX)[2] || '').trim() || state(guild_id).media_name
-    if (!keywords) {
-      reply(guild_id, `I'm not playing anything and you didnt provide any search terms ${ emoji('peperetarded') }`, false)
-      return
+  let keywords = (msg.content.match(REGEX)[2] || '').trim()
+  if (!keywords) {
+    const guild_id = setLastState(msg)
+    if (guild_id) {
+      keywords = state(guild_id).media_name
+      if (!keywords) {
+        reply(guild_id, `I'm not playing anything and you didnt provide any search terms ${ emoji('peperetarded') }`, false)
+        return
+      }
     }
-    const { artist, title } = await keywordsToTrack(keywords)
-    if (!artist) {
-      reply(guild_id, `No lyrics found for ${ keywords } ${ emoji('pepothink') }`,false)
-      return
-    }
-    const lyrics = await getLyrics(artist, title)
-    if (lyrics)
-      reply(guild_id, `\`\`\`${ lyrics }\`\`\``, false)
-    else
-      reply(guild_id, `No lyrics found for ${ title } - ${ artist } ${ emoji('pepothink') }`,false)
   }
+  const { artist, title } = await keywordsToTrack(keywords)
+  if (!artist) {
+    msg.channel.send(`No lyrics found for ${ keywords } ${ emoji('pepothink') }`)
+    return
+  }
+  const lyrics = await getLyrics(artist, title)
+  if (lyrics) {
+    let chunks
+    if (lyrics.length > MAX_LYRICS_SIZE) {
+      const split_index = MAX_LYRICS_SIZE + lyrics.substr(MAX_LYRICS_SIZE).indexOf("\n\n")
+      chunks = [lyrics.substr(0, split_index), lyrics.substr(split_index)]
+    }
+    else
+      chunks = [lyrics, '']
+    await msg.channel.send(`${ title } by ${ artist }`)
+    await msg.channel.send(`>>> ${ chunks[0].trim() }`)
+    if (chunks[1].length)
+      await msg.channel.send(`>>> ${ chunks[1].trim() }`)
+  }
+  else
+    msg.channel.send(`No lyrics found for ${ title } - ${ artist } ${ emoji('pepothink') }`)
 }

@@ -37,3 +37,10 @@ exports.now = _ => moment.utc()
 exports.getAttachments = msg => exports.toArray(msg.attachments || { values: [] })
 
 exports.toArray = col => [...col.values()]
+
+exports.htmlUnescape = text => text
+  .replace(/&quot;/g, '"').replace(/&#34;/g, '"')
+  .replace(/&amp;/g, '&').replace(/&#38;/g, '&')
+  .replace(/&apos;/g, "'").replace(/&#39;/g, "'")
+  .replace(/&lt;/g, "<").replace(/&#60;/g, "<")
+  .replace(/&gt;/g, ">").replace(/&#62;/g, ">")

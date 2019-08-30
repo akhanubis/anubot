@@ -1,7 +1,8 @@
 const ytdl = require('ytdl-core')
 const { ASSETS_BUCKET_DOMAIN, ASSETS_BUCKET, BOT_ID, ON_VOICE_IDLE_TIMEOUT_IN_S, YOUTUBE_REGION_CODE } = require('../../env')
-const { emoji, latestMessages } = require('../../utils')
+const { emoji, latestMessages, htmlUnescape } = require('../../utils')
 const { getSpotifyTracks } = require('../../spotify')
+const axios = require('axios')
 
 const VOLUME_MULTIPLIER = 10,
       DEFAULT_VOLUME = 10
@@ -138,7 +139,7 @@ exports.playNext = async guild_id => {
   dispatcher.once('end', _ => exports.playNext(guild_id))
   exports.setState(guild_id, { stream: dispatcher, media_name })
 
-  const now_playing_text = `Now playing ${ media_name }\n${ queue_left_text(guild_id) }`
+  const now_playing_text = `>>> Now playing ${ media_name }\n${ queue_left_text(guild_id) }`
   const last_message = (await latestMessages(exports.state(guild_id).last_text_channel, 1))[0]
   if (last_message.author.id === BOT_ID && last_message.content.match(/^Now playing/)) {
     console.log(now_playing_text)
@@ -172,13 +173,13 @@ exports.showQueue = guild_id => {
     output = `Now playing ${ now_playing }\n${ output }`
   if (q.length)
     output = `${ output }\n\`\`\`\n${ q.map(song => song.media_name).join("\n") }\n\`\`\``
-  exports.reply(guild_id, output)
+  exports.reply(guild_id, `>>> ${ output }`)
 }
 
 exports.onPlaySound = guild_id => {
   if (exports.state(guild_id).stream) {
     const q = exports.state(guild_id).queue,
-          queued_text = `Queued ${ q[q.length - 1].media_name }\n${ queue_left_text(guild_id) }`
+          queued_text = `>>> Queued ${ q[q.length - 1].media_name }\n${ queue_left_text(guild_id) }`
     exports.reply(guild_id, queued_text)
   }
   else
@@ -195,7 +196,7 @@ exports.queueFromSpotify = async (guild_id, url) => {
 
   if (exports.state(guild_id).stream) {
     const queued_text = songs.length === 1 ? `Queued ${ songs[0] }\n${ queue_left_text(guild_id) }` : `Queued ${ songs.length } songs\n${ queue_left_text(guild_id) }`
-    exports.reply(guild_id, queued_text)
+    exports.reply(guild_id, `>>> ${ queued_text }`)
   }
   else
     exports.playNext(guild_id)
@@ -219,4 +220,15 @@ exports.pauseOrResume = (guild_id, command) => {
     dispatcher[command]()
   else
     exports.reply(guild_id, `I'm not playing anything ${ emoji('peperetarded') }`)
+}
+
+exports.getLyrics = async (artist, title) => {
+  const result = await axios.get(`https://www.azlyrics.com/lyrics/${ artist.toLowerCase().replace(/[^a-z0-9]+/g, '') }/${ title.toLowerCase().replace(/[^a-z0-9]+/g, '') }.html`).catch(e => {
+    console.log(e)
+    return { data: '' }
+  }),
+        lyrics = (result.data.match(/Sorry about that\. -->(.+?)<\/div>/is) || [])[1]
+  if (!lyrics)
+    return
+  return htmlUnescape(lyrics.replace(/<br>/g, "\n").replace(/\n\n/g, "\n").replace(/\]?<\/?i>\[?/g, '**'))
 }
