@@ -17,7 +17,7 @@ exports.process = async msg => {
   if (!keywords) {
     const guild_id = setLastState(msg)
     if (guild_id) {
-      keywords = state(guild_id).media_name
+      keywords = state(guild_id).original_query || state(guild_id).media_name
       if (!keywords) {
         reply(guild_id, `I'm not playing anything and you didnt provide any search terms ${ emoji('peperetarded') }`, false)
         return

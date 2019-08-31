@@ -139,7 +139,7 @@ const playNext = async (guild_id, skip = 1) => {
   dispatcher.setVolume(current_volume(guild_id) / VOLUME_MULTIPLIER)
   dispatcher.once('end', _ => playNext(guild_id))
   media_name = htmlUnescape(media_name)
-  setState(guild_id, { stream: dispatcher, media_name })
+  setState(guild_id, { stream: dispatcher, original_query: query, media_name })
 
   const last_message = state(guild_id).last_now_playing_message,
         [new_message, _] = await Promise.all([
