@@ -35,6 +35,7 @@ const MATCHERS = [
   'music/pause',
   'music/resume',
   'music/lyrics',
+  'music/shuffle',
   'music/sound'
 ].map(f => require(`./matchers/${ f }`))
 

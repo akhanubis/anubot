@@ -1,7 +1,7 @@
 const ytdl = require('ytdl-core')
 const cheerio = require('cheerio')
 const { ASSETS_BUCKET_DOMAIN, ASSETS_BUCKET, BOT_ID, ON_VOICE_IDLE_TIMEOUT_IN_S, YOUTUBE_REGION_CODE } = require('../../env')
-const { emoji, latestMessages, htmlUnescape } = require('../../utils')
+const { emoji, latestMessages, htmlUnescape, shuffle } = require('../../utils')
 const { getSpotifyTracks } = require('../../spotify')
 const axios = require('axios')
 
@@ -238,4 +238,9 @@ exports.getLyrics = async (artist, title) => {
   html = ['<!--sse-->', '<!--/sse-->', '<p>', '</p>'].reduce((out, to_remove) => out.replace(to_remove, ''), html)
   html = html.replace(/<\/?i>/g, '*').replace(/<\/?b>/g, '**').replace(/<br>/g, "\n").replace(/\n\n/g, "\n").trim()
   return htmlUnescape(html)
+}
+
+exports.shuffle = guild_id => {
+  shuffle(exports.state(guild_id).queue)
+  exports.reply(guild_id, 'Queue shuffled', false)
 }
