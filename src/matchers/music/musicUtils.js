@@ -42,7 +42,7 @@ const save_to_cache = (youtube_id, media, guild_id) => {
 
 const get_current_voice_connection = guild_id => global.client.voice.connections.get(guild_id)
 
-const queue_left_text = guild_id => `${ exports.state(guild_id).queue.length } song${ exports.state(guild_id).queue.length === 1 ? '' : 's' } left in queue`
+const queue_left_text = guild_id => `${ state(guild_id).queue.length } song${ state(guild_id).queue.length === 1 ? '' : 's' } left in queue`
 
 const get_video_by_id = async (guild_id, yt_id) => {
   const cached_video = await get_cached_video(yt_id)
@@ -60,22 +60,22 @@ const search_yt_video = async query => {
   return first_result
 }
 
-const current_volume = guild_id => exports.state(guild_id).volume || DEFAULT_VOLUME
+const current_volume = guild_id => state(guild_id).volume || DEFAULT_VOLUME
 
-exports.reply = (guild_id, message, log = true) => {
+const reply = (guild_id, message, log = true) => {
   if (log)
     console.log(`[${ guild_id }]`, message)
-  exports.state(guild_id).last_text_channel.send(message)
+  state(guild_id).last_text_channel.send(message)
 }
 
-exports.state = guild_id => global.MUSIC_STATE[guild_id]
+const state = guild_id => global.MUSIC_STATE[guild_id]
 
-exports.setState = (guild_id, new_state) => {
+const setState = (guild_id, new_state) => {
   global.MUSIC_STATE[guild_id] = global.MUSIC_STATE[guild_id] || {}
   global.MUSIC_STATE[guild_id] = { ...global.MUSIC_STATE[guild_id], ...new_state }
 }
 
-exports.setLastState = msg => {
+const setLastState = msg => {
   const voice_channel = msg.member.voice.channel,
         text_channel = msg.channel,
         guild_id = text_channel.guild.id
@@ -83,31 +83,31 @@ exports.setLastState = msg => {
     text_channel.send(`You are not in a voice channel ${ emoji('peperetarded') }`)
     return
   }
-  exports.setState(guild_id, {
+  setState(guild_id, {
     last_text_channel: text_channel,
     last_voice_channel: voice_channel
   })
   return guild_id
 }
 
-exports.stopCurrent = guild_id => {
-  const current_stream = exports.state(guild_id).stream
+const stopCurrent = guild_id => {
+  const current_stream = state(guild_id).stream
   if (current_stream)
     current_stream.destroy()
 }
 
-exports.joinVoice = async (guild_id, force) => {
+const joinVoice = async (guild_id, force) => {
   const current_vc = get_current_voice_connection(guild_id)
   if (force || !current_vc)
-    return await exports.state(guild_id).last_voice_channel.join()
+    return await state(guild_id).last_voice_channel.join()
   return current_vc
 }
 
-exports.playNext = async (guild_id, skip = 1) => {
-  clearTimeout(exports.state(guild_id).leave_timeout)
-  const next_song = (exports.state(guild_id).queue || []).splice(0, skip).pop()
+const playNext = async (guild_id, skip = 1) => {
+  clearTimeout(state(guild_id).leave_timeout)
+  const next_song = (state(guild_id).queue || []).splice(0, skip).pop()
   if (!next_song) {
-    exports.onPlaybackEnd(guild_id)
+    onPlaybackEnd(guild_id)
     return
   }
   let { attachment, filename, query, media_name } = next_song
@@ -128,31 +128,31 @@ exports.playNext = async (guild_id, skip = 1) => {
         media_name = result.snippet.title
       }
       else {
-        exports.reply(guild_id, `No matching video found for ${ query } ${ emoji('pepothink') }`, false)
-        exports.playNext(guild_id)
+        reply(guild_id, `No matching video found for ${ query } ${ emoji('pepothink') }`, false)
+        playNext(guild_id)
         return
       }
     }
   }
-  const connection = await exports.joinVoice(guild_id),
+  const connection = await joinVoice(guild_id),
         dispatcher = connection.play(media)
   dispatcher.setVolume(current_volume(guild_id) / VOLUME_MULTIPLIER)
-  dispatcher.once('end', _ => exports.playNext(guild_id))
+  dispatcher.once('end', _ => playNext(guild_id))
   media_name = htmlUnescape(media_name)
-  exports.setState(guild_id, { stream: dispatcher, media_name })
+  setState(guild_id, { stream: dispatcher, media_name })
 
   const now_playing_text = `>>> Now playing ${ media_name }\n${ queue_left_text(guild_id) }`
-  const last_message = (await latestMessages(exports.state(guild_id).last_text_channel, 1))[0]
+  const last_message = (await latestMessages(state(guild_id).last_text_channel, 1))[0]
   if (last_message.author.id === BOT_ID && last_message.content.match(/^>>> Now playing/)) {
     console.log(now_playing_text)
     last_message.edit(now_playing_text)
   }
   else
-    exports.reply(guild_id, now_playing_text)
+    reply(guild_id, now_playing_text)
 }
 
-exports.onPlaybackEnd = (guild_id, force) => {
-  exports.setState(guild_id, {
+const onPlaybackEnd = (guild_id, force) => {
+  setState(guild_id, {
     stream: null,
     media_name: null,
     queue: [],
@@ -161,70 +161,70 @@ exports.onPlaybackEnd = (guild_id, force) => {
       if (vc) {
         vc.channel.leave()
         if (!force)
-          exports.reply(guild_id, "Ok, it looks like I'm not needed anymore :( Anubot out", false)
+          reply(guild_id, "Ok, it looks like I'm not needed anymore :( Anubot out", false)
       }
     }, force ? 0 : ON_VOICE_IDLE_TIMEOUT_IN_S * 1000)
   })
 }
 
-exports.showQueue = guild_id => {
+const showQueue = guild_id => {
   let output = queue_left_text(guild_id),
-      q = exports.state(guild_id).queue,
-      now_playing = exports.state(guild_id).media_name
+      q = state(guild_id).queue,
+      now_playing = state(guild_id).media_name
   if (now_playing)
     output = `Now playing ${ now_playing }\n${ output }`
   if (q.length)
     output = `${ output }\n\`\`\`\n${ q.map(song => song.media_name).join("\n") }\n\`\`\``
-  exports.reply(guild_id, `>>> ${ output }`)
+  reply(guild_id, `>>> ${ output }`)
 }
 
-exports.onPlaySound = guild_id => {
-  if (exports.state(guild_id).stream) {
-    const q = exports.state(guild_id).queue,
+const onPlaySound = guild_id => {
+  if (state(guild_id).stream) {
+    const q = state(guild_id).queue,
           queued_text = `>>> Queued ${ q[q.length - 1].media_name }\n${ queue_left_text(guild_id) }`
-    exports.reply(guild_id, queued_text)
+    reply(guild_id, queued_text)
   }
   else
-    exports.playNext(guild_id)
+    playNext(guild_id)
 }
 
-exports.queueFromSpotify = async (guild_id, url) => {
+const queueFromSpotify = async (guild_id, url) => {
   const songs = await getSpotifyTracks(url)
   for (let s of songs)
-    exports.state(guild_id).queue.push({
+    state(guild_id).queue.push({
       query: s,
       media_name: s
     })
 
-  if (exports.state(guild_id).stream) {
+  if (state(guild_id).stream) {
     const queued_text = songs.length === 1 ? `Queued ${ songs[0] }\n${ queue_left_text(guild_id) }` : `Queued ${ songs.length } songs\n${ queue_left_text(guild_id) }`
-    exports.reply(guild_id, `>>> ${ queued_text }`)
+    reply(guild_id, `>>> ${ queued_text }`)
   }
   else
-    exports.playNext(guild_id)
+    playNext(guild_id)
 }
 
-exports.setVolume = (guild_id, volume) => {
+const setVolume = (guild_id, volume) => {
   const dispatcher = (get_current_voice_connection(guild_id) || {}).dispatcher
   if (volume !== null) {
-    exports.setState(guild_id, { volume: volume })
+    setState(guild_id, { volume: volume })
     if (dispatcher)
       dispatcher.setVolume(volume / VOLUME_MULTIPLIER)
-    exports.reply(guild_id, `Volume set to ${ volume }`)
+    reply(guild_id, `Volume set to ${ volume }`)
   }
   else
-    exports.reply(guild_id, `Current volume is ${ current_volume(guild_id) }`)
+    reply(guild_id, `Current volume is ${ current_volume(guild_id) }`)
 }
 
-exports.pauseOrResume = (guild_id, command) => {
+const pauseOrResume = (guild_id, command) => {
   const dispatcher = (get_current_voice_connection(guild_id) || {}).dispatcher
   if (dispatcher)
     dispatcher[command]()
   else
-    exports.reply(guild_id, `I'm not playing anything ${ emoji('peperetarded') }`)
+    reply(guild_id, `I'm not playing anything ${ emoji('peperetarded') }`)
 }
 
-exports.getLyrics = async (artist, title) => {
+const getLyrics = async (artist, title) => {
   const path = `${ artist }-${ title }-lyrics`.toLowerCase().replace(/ñ/g, 'n').replace(/[\s-]+/g, '-').replace(/[^-a-z0-9]+/g, ''),
         result = await axios.get(`https://genius.com/${ path }`).catch(console.log)
   console.log('Fetching lyrics from ', path)
@@ -240,7 +240,25 @@ exports.getLyrics = async (artist, title) => {
   return htmlUnescape(html)
 }
 
-exports.shuffle = guild_id => {
-  shuffle(exports.state(guild_id).queue)
-  exports.reply(guild_id, 'Queue shuffled', false)
+const shuffleQueue = guild_id => {
+  shuffle(state(guild_id).queue)
+  reply(guild_id, 'Queue shuffled', false)
+}
+
+module.exports = {
+  reply: reply,
+  state: state,
+  setState: setState,
+  setLastState: setLastState,
+  stopCurrent: stopCurrent,
+  joinVoice: joinVoice,
+  playNext: playNext,
+  onPlaybackEnd: onPlaybackEnd,
+  showQueue: showQueue,
+  onPlaySound: onPlaySound,
+  queueFromSpotify: queueFromSpotify,
+  setVolume: setVolume,
+  pauseOrResume: pauseOrResume,
+  getLyrics: getLyrics,
+  shuffleQueue: shuffleQueue
 }

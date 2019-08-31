@@ -1,4 +1,4 @@
-const { shuffle, setLastState } = require('./musicUtils')
+const { shuffleQueue, setLastState } = require('./musicUtils')
 
 const
   REGEX = /^\!shuffle$/i,
@@ -11,5 +11,5 @@ exports.regex = REGEX
 exports.process = async msg => {
   const guild_id = setLastState(msg)
   if (guild_id)
-    shuffle(guild_id)
+    shuffleQueue(guild_id)
 }
