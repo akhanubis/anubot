@@ -65,7 +65,7 @@ const current_volume = guild_id => state(guild_id).volume || DEFAULT_VOLUME
 const reply = (guild_id, message, log = true) => {
   if (log)
     console.log(`[${ guild_id }]`, message)
-  state(guild_id).last_text_channel.send(message)
+  return state(guild_id).last_text_channel.send(message)
 }
 
 const state = guild_id => global.MUSIC_STATE[guild_id]
@@ -141,14 +141,12 @@ const playNext = async (guild_id, skip = 1) => {
   media_name = htmlUnescape(media_name)
   setState(guild_id, { stream: dispatcher, media_name })
 
-  const now_playing_text = `>>> Now playing ${ media_name }\n${ queue_left_text(guild_id) }`
-  const last_message = (await latestMessages(state(guild_id).last_text_channel, 1))[0]
-  if (last_message.author.id === BOT_ID && last_message.content.match(/^>>> Now playing/)) {
-    console.log(now_playing_text)
-    last_message.edit(now_playing_text)
-  }
-  else
-    reply(guild_id, now_playing_text)
+  const last_message = state(guild_id).last_now_playing_message,
+        [new_message, _] = await Promise.all([
+          reply(guild_id, `>>> Now playing ${ media_name }\n${ queue_left_text(guild_id) }`),
+          last_message ? last_message.delete().catch(console.log) : Promise.resolve()
+        ])
+  setState(guild_id, { last_now_playing_message: new_message })
 }
 
 const onPlaybackEnd = (guild_id, force) => {
