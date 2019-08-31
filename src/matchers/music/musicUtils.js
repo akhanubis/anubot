@@ -103,9 +103,9 @@ exports.joinVoice = async (guild_id, force) => {
   return current_vc
 }
 
-exports.playNext = async guild_id => {
+exports.playNext = async (guild_id, skip = 1) => {
   clearTimeout(exports.state(guild_id).leave_timeout)
-  const next_song = (exports.state(guild_id).queue || []).shift()
+  const next_song = (exports.state(guild_id).queue || []).splice(0, skip).pop()
   if (!next_song) {
     exports.onPlaybackEnd(guild_id)
     return
