@@ -45,14 +45,20 @@ exports.listTodo = _ => {
   return [
     {
       task: 'clean my desk',
-      done: true
+      done: true,
+      timestamp: '2019-06-14T05:10:31.264Z',
+      task_id: '1234__clean my desk'
     },
     {
-      task: 'take a shower'
+      task: 'take a shower',
+      timestamp: '2019-06-14T07:10:31.264Z',
+      task_id: '1234__take a shower'
     },
     {
       task: 'a done task',
-      done: true
+      done: true,
+      timestamp: '2019-06-14T05:09:31.264Z',
+      task_id: '1234__a done task'
     }
   ]
 }
