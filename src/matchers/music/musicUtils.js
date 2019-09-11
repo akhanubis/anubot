@@ -46,7 +46,7 @@ const queue_left_text = guild_id => `${ state(guild_id).queue.length } song${ st
 
 const get_video_by_id = async (guild_id, yt_id) => {
   const cached_video = await get_cached_video(yt_id)
-  return cached_video || save_to_cache(yt_id, ytdl(yt_id, { quality: 'highestaudio' }), guild_id)
+  return cached_video || save_to_cache(yt_id, ytdl(yt_id, { quality: 'highestaudio', highWaterMark: 1<<25 }), guild_id)
 }
 
 const search_yt_video = async query => {
