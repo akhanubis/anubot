@@ -44,10 +44,12 @@ const get_current_voice_connection = guild_id => global.client.voice.connections
 
 const queue_left_text = guild_id => `${ state(guild_id).queue.length } song${ state(guild_id).queue.length === 1 ? '' : 's' } left in queue`
 
-const get_video_by_id = async (guild_id, yt_id) => {
-  const cached_video = await get_cached_video(yt_id)
-  return cached_video || save_to_cache(yt_id, ytdl(yt_id, { quality: 'highestaudio', highWaterMark: 1<<25 }), guild_id)
-}
+// TEMP
+// const get_video_by_id = async (guild_id, yt_id) => {
+//   const cached_video = await get_cached_video(yt_id)
+//   return cached_video || save_to_cache(yt_id, ytdl(yt_id, { quality: 'highestaudio', highWaterMark: 1<<25 }), guild_id)
+// }
+const get_video_by_id = (_, yt_id) => ytdl(yt_id, { quality: 'highestaudio', highWaterMark: 1<<25 })
 
 const search_yt_video = async query => {
   const response = await global.youtube.search.list({
