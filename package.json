@@ -16,7 +16,7 @@
     "aws-sdk": "^2.450.0",
     "axios": "^0.19.0",
     "cheerio": "^1.0.0-rc.3",
-    "discord.js": "github:discordjs/discord.js",
+    "discord.js": "git://github.com/discordjs/discord.js.git#278f185b645353b1f85991cde50e828178e10715",
     "ffmpeg-binaries": "^4.0.0",
     "googleapis": "^42.0.0",
     "moment": "^2.24.0",
