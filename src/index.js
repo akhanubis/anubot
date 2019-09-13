@@ -36,7 +36,8 @@ const MATCHERS = [
   'music/resume',
   'music/lyrics',
   'music/shuffle',
-  'music/sound'
+  'music/sound',
+  'dota/dota'
 ].map(f => require(`./matchers/${ f }`))
 
 global.last_recorded_sr = {}
