@@ -34,17 +34,18 @@ exports.process = async msg => {
 const parse_match = parse_id => {
  return axios.get(` ${URL}/matches/${parse_id}`).then(response => {
     if(response.data.version) {
-      let match_info = {}
-      match_info.duration = parse_match_duration(response.data.duration)
-      match_info.game_mode = GAME_MODE[response.data.game_mode]
-      match_info.dire_score = response.data.dire_score
-      match_info.radiant_score = response.data.radiant_score
-      match_info.winner = (response.data.radiant_win) ? 'Radiant' : 'Dire'
-      match_info.lobby_type = LOBBY_TYPES[response.data.lobby_type]
-      match_info.skill = (response.data.skill) ? SKILL_LEVEL[response.data.skill] : 'Unknown'
+      let match_info = {
+        duration: parse_match_duration(response.data.duration),
+        game_mode: GAME_MODE[response.data.game_mode],
+        dire_score: response.data.dire_score,
+        radiant_score: response.data.radiant_score,
+        winner: (response.data.radiant_win) ? 'Radiant' : 'Dire',
+        lobby_type: LOBBY_TYPES[response.data.lobby_type],
+        skill: (response.data.skill) ? SKILL_LEVEL[response.data.skill] : 'Unknown',
+      }
       let players = response.data.players.map(x => {
         let player = {
-          personaname: x.personaname ? x.personaname.replace(/[^a-zA-Z0-9 ]/g, "") : 'anonymous',
+          personaname: x.personaname ? x.personaname.replace(/[^\x00-\x7F]/g, '') : 'anonymous',
           last_hits: x.lh_t[10],
           denies: x.dn_t[10],
           assists: x.assists,
@@ -82,20 +83,29 @@ const parse_match_duration = seconds => {
 }
 
 const parse_table = (players, match_info) => {
+  const fields = [
+    'personaname',
+    'heroe'
+  ]
+
   let radiant_players = players.filter(x => x.isRadiant)
   let dire_players = players.filter(x => !x.isRadiant)
   let player_str_dire = ''
   let player_str_radiant = ''
+  
+  const max_lengths = fields.map(f => max_length(players, f))
+  
+  radiant_players.map(x => player_str_radiant += `|${format_field(x.personaname,Math.min(20,max_lengths[0]) ,false)} - ${format_field(x.heroe,Math.min(19,max_lengths[1]))}|${format_field(x.lane_role,6)}|${format_field(x.kills,3)}|${format_field(x.deaths,3)}|${format_field(x.assists,3)}|${format_field(x.last_hits,5)}|${format_field(x.denies,5)}|${format_field(x.eff,7)}|${format_field(x.gold_per_min,5)}|${format_field(x.xp_per_min,5)}|${format_field(x.hero_damage,6)}|${format_field(x.tower_damage,6)}|${format_field(x.rank_tier,11)}|\n`)
+  dire_players.map(x => player_str_dire += `|${format_field(x.personaname,Math.min(20,max_lengths[0]) ,false)} - ${format_field(x.heroe,Math.min(19,max_lengths[1]))}|${format_field(x.lane_role,6)}|${format_field(x.kills,3)}|${format_field(x.deaths,3)}|${format_field(x.assists,3)}|${format_field(x.last_hits,5)}|${format_field(x.denies,5)}|${format_field(x.eff,7)}|${format_field(x.gold_per_min,5)}|${format_field(x.xp_per_min,5)}|${format_field(x.hero_damage,6)}|${format_field(x.tower_damage,6)}|${format_field(x.rank_tier,11)}|\n`)
 
-  radiant_players.map(x => player_str_radiant += `|${format_field(x.personaname,20,false)} - ${format_field(x.heroe,19)}|${format_field(x.lane_role,6)}|${format_field(x.kills,3)}|${format_field(x.deaths,3)}|${format_field(x.assists,3)}|${format_field(x.last_hits,7)}|${format_field(x.denies,7)}|${format_field(x.eff,8)}|${format_field(x.gold_per_min,5)}|${format_field(x.xp_per_min,5)}|${format_field(x.hero_damage,6)}|${format_field(x.tower_damage,6)}|${format_field(x.rank_tier,13)}|\n`)
-  dire_players.map(x => player_str_dire += `|${format_field(x.personaname,20,false)} - ${format_field(x.heroe,19)}|${format_field(x.lane_role,6)}|${format_field(x.kills,3)}|${format_field(x.deaths,3)}|${format_field(x.assists,3)}|${format_field(x.last_hits,7)}|${format_field(x.denies,7)}|${format_field(x.eff,8)}|${format_field(x.gold_per_min,5)}|${format_field(x.xp_per_min,5)}|${format_field(x.hero_damage,6)}|${format_field(x.tower_damage,6)}|${format_field(x.rank_tier,13)}|\n`)
+  let dif = 20 - max_lengths[0] + 19 - max_lengths[1]
 
   let table = "```"
-  table = `${table}${match_info.radiant_score} - ${match_info.dire_score} in ${match_info.duration} - Game Mode: ${match_info.game_mode} - Lobby: ${match_info.lobby_type} -  Skill: ${match_info.skill} - Winner: ${match_info.winner} \n\n`
-  table = `${table}|                                          |  Lane|  K|  D|  A| lh@10 | dn@10 | eff@10 | GPM | XPM |  HD  |  TD  |         RANK|\n`
-  table = `${table}| RADIANT ---${(match_info.winner === 'Radiant' ? 'Winner' : 'Loser-').padEnd(114, '-')}|\n`
+  table = `${table}${match_info.radiant_score} - ${match_info.dire_score} in ${match_info.duration} - Game Mode: ${match_info.game_mode} - Lobby: ${match_info.lobby_type} - Skill: ${match_info.skill} - Winner: ${match_info.winner} \n\n`
+  table = `${table}|${' '.repeat(Math.min(20,max_lengths[0]) + Math.min(19,max_lengths[1]) + 3)}|  Lane|  K|  D|  A|lh@10|dn@10| eff@10|  GPM|  XPM|  HD  |  TD  |       RANK|\n`
+  table = `${table}| RADIANT ---${(match_info.winner === 'Radiant' ? 'Winner' : 'Loser-').padEnd(107 - dif, '-')}|\n`
   table = `${table}${player_str_radiant}`
-  table = `${table}| DIRE ------${(match_info.winner === 'Radiant' ? 'Loser' : 'Winner').padEnd(114, '-')}|\n`
+  table = `${table}| DIRE ------${(match_info.winner === 'Radiant' ? 'Loser' : 'Winner').padEnd(107 - dif, '-')}|\n`
   table = `${table}${player_str_dire}`
   table = table + "```"
   return table
@@ -106,3 +116,6 @@ const format_field = (word, chars, alignRight = true) => {
     return `${ word.toString().substr(0, chars - 3) }...`
   return word.toString()[alignRight ? 'padStart' : 'padEnd'](chars, ' ')
 }
+
+const max_length = (players, field) => Math.max.apply(this, players.map(p => (p[field] || '').length))
+
