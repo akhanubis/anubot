@@ -147,9 +147,7 @@ exports.ACTIVITIES = [
   ['a happy song', { type: 'PLAYING' }],
   ['with your heart', { type: 'PLAYING' }],
   ['with my donger', { type: 'PLAYING' }],
-  ['cba\'s instagram feed', { type: 'LISTENING' }],
   ['overwatch league', { type: 'WATCHING' }],
-  ['arteezy stream', { type: 'WATCHING' }],
   ['kanye west', { type: 'LISTENING' }],
   ['a song of ice and fire', { type: 'LISTENING' }], 
   ['the game of thrones', {type: 'PLAYING'}], 
@@ -157,7 +155,11 @@ exports.ACTIVITIES = [
   ['the sunset', {type: 'WATCHING'}], 
   ['nightvale radio', { type: 'LISTENING' }],
   ['with manquito :)', {type: 'PLAYING'}],
-  ['with cactus :)', {type: 'PLAYING'}]
+  ['with cactus :)', {type: 'PLAYING'}],
+  ['fuslie', { type: 'WATCHING' }],
+  ['bokchamps', { type: 'WATCHING' }],
+  ['pealeaf', { type: 'LISTENING' }],
+  ['hadestown', { type: 'LISTENING' }]
 ]
 
 exports.PATS = {
