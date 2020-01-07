@@ -159,7 +159,9 @@ exports.ACTIVITIES = [
   ['fuslie', { type: 'WATCHING' }],
   ['bokchamps', { type: 'WATCHING' }],
   ['pealeaf', { type: 'LISTENING' }],
-  ['hadestown', { type: 'LISTENING' }]
+  ['hadestown', { type: 'LISTENING' }],
+  ['hades', {type: 'PLAYING'}],
+  ['secret hitler', {type: 'PLAYING'}]
 ]
 
 exports.PATS = {
