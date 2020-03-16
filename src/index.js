@@ -40,6 +40,12 @@ const MATCHERS = [
   'dota/dota'
 ].map(f => require(`./matchers/${ f }`))
 
+const CORONA_CHANNELS = [
+  //'469168969761161234',
+  //'496828930121269258'
+  '314332543002345474'
+]
+
 global.last_recorded_sr = {}
 global.client = new Discord.Client()
 const m = async _ => {
@@ -55,6 +61,10 @@ const m = async _ => {
     console.log(`Logged in as ${ global.client.user.tag }!`)
     setInterval(setActivity, ACTIVITY_REFRESH_INTERVAL_IN_S * 1000)
     setActivity()
+    for (const id of CORONA_CHANNELS) {
+      const c = client.channels.get(id)
+      c.send("dont forget to wash your hands").then(_ => c.send('<a:peepoWash:689212262917210242>'))
+    }
   })
   global.client.on('message', async msg => {
     /*
