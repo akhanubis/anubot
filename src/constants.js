@@ -177,7 +177,8 @@ exports.PATS = {
 
 exports.USER_IDS = {
   cactus: '421125233970380810',
-  anu: '113794572236226563'
+  anu: '113794572236226563',
+  gaben: '314530943941738506'
 }
 
 exports.MAIN_EMOJIS = {

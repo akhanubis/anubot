@@ -26,6 +26,7 @@ const MATCHERS = [
   'todoDone',
   'channelMessage',
   'jajaja',
+  'ember',
   'music/play',
   'music/next',
   'music/stop',
