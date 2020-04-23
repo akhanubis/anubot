@@ -41,6 +41,7 @@ const MATCHERS = [
   'dota/dota'
 ].map(f => require(`./matchers/${ f }`))
 
+let activityInterval
 global.last_recorded_sr = {}
 global.client = new Discord.Client()
 const m = async _ => {
@@ -54,7 +55,8 @@ const m = async _ => {
 
   global.client.on('ready', () => {
     console.log(`Logged in as ${ global.client.user.tag }!`)
-    setInterval(setActivity, ACTIVITY_REFRESH_INTERVAL_IN_S * 1000)
+    clearInterval(activityInterval)
+    activityInterval = setInterval(setActivity, ACTIVITY_REFRESH_INTERVAL_IN_S * 1000)
     setActivity()
   })
   global.client.on('message', async msg => {
