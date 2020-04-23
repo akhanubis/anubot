@@ -147,9 +147,7 @@ exports.ACTIVITIES = [
   ['a happy song', { type: 'PLAYING' }],
   ['with your heart', { type: 'PLAYING' }],
   ['with my donger', { type: 'PLAYING' }],
-  ['cba\'s instagram feed', { type: 'LISTENING' }],
   ['overwatch league', { type: 'WATCHING' }],
-  ['arteezy stream', { type: 'WATCHING' }],
   ['kanye west', { type: 'LISTENING' }],
   ['a song of ice and fire', { type: 'LISTENING' }], 
   ['the game of thrones', {type: 'PLAYING'}], 
@@ -157,7 +155,13 @@ exports.ACTIVITIES = [
   ['the sunset', {type: 'WATCHING'}], 
   ['nightvale radio', { type: 'LISTENING' }],
   ['with manquito :)', {type: 'PLAYING'}],
-  ['with cactus :)', {type: 'PLAYING'}]
+  ['with cactus :)', {type: 'PLAYING'}],
+  ['fuslie', { type: 'WATCHING' }],
+  ['bokchamps', { type: 'WATCHING' }],
+  ['pealeaf', { type: 'LISTENING' }],
+  ['hadestown', { type: 'LISTENING' }],
+  ['hades', {type: 'PLAYING'}],
+  ['secret hitler', {type: 'PLAYING'}]
 ]
 
 exports.PATS = {
@@ -173,7 +177,8 @@ exports.PATS = {
 
 exports.USER_IDS = {
   cactus: '421125233970380810',
-  anu: '113794572236226563'
+  anu: '113794572236226563',
+  gaben: '314530943941738506'
 }
 
 exports.MAIN_EMOJIS = {

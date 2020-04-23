@@ -1,7 +1,9 @@
 const { ACCOUNTS_LIST } = require('./constants')
 const { BEANSTALK, MATCHES_TABLE, MATCHES_TABLE_MATCH_ID_INDEX, TAGS_TABLE, TAGS_TABLE_SCANNABLE_INDEX, TAGS_TABLE_GUILD_TAG_ID_INDEX, TODOS_TABLE, TODOS_TABLE_USER_ID_INDEX } = require('./env')
+const { now } = require('./utils')
 
-const TODO_MAX_ENTRIES = 25
+const TODO_MAX_ENTRIES = 25,
+      DAY_IN_SECONDS = 86400
 
 exports.saveMatch = async (match, overriden_id) => {
   let match_common_data = { ...match, match_id: parseInt(overriden_id || next_id()), players: undefined },
@@ -207,6 +209,7 @@ exports.doTodo = async (user, task) => {
 }
 
 exports.listTodo = async user => {
+  const n = now()
   return (await global.db.query({
     TableName: TODOS_TABLE,
     IndexName: TODOS_TABLE_USER_ID_INDEX,
@@ -214,7 +217,7 @@ exports.listTodo = async user => {
     ExpressionAttributeValues: { ':u': user.id },
     Limit: TODO_MAX_ENTRIES,
     ScanIndexForward: false
-  }).promise()).Items.reverse()
+  }).promise()).Items.reverse().filter(t => !t.done || n.diff(t.timestamp, 'seconds') < DAY_IN_SECONDS) /* keep if not done or done during the last day */
 }
 
 const next_id = _ => ++global.last_id

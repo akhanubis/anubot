@@ -18,7 +18,7 @@ exports.process = async msg => {
         filename = (msg.content.match(REGEX)[1] || '').trim()
 
   if (!filename) {
-    text_channel.send(`Missing media ${ emoji('pepothink') }`)
+    text_channel.send(`Missing media ${ emoji('peperetarded') }`)
     return
   }
   const media_name = filename

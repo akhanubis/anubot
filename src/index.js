@@ -26,12 +26,22 @@ const MATCHERS = [
   'todoDone',
   'channelMessage',
   'jajaja',
+  'ember',
   'music/play',
   'music/next',
   'music/stop',
-  'music/sound'
+  'music/join',
+  'music/leave',
+  'music/volume',
+  'music/pause',
+  'music/resume',
+  'music/lyrics',
+  'music/shuffle',
+  'music/sound',
+  'dota/dota'
 ].map(f => require(`./matchers/${ f }`))
 
+let activityInterval
 global.last_recorded_sr = {}
 global.client = new Discord.Client()
 const m = async _ => {
@@ -45,7 +55,8 @@ const m = async _ => {
 
   global.client.on('ready', () => {
     console.log(`Logged in as ${ global.client.user.tag }!`)
-    setInterval(setActivity, ACTIVITY_REFRESH_INTERVAL_IN_S * 1000)
+    clearInterval(activityInterval)
+    activityInterval = setInterval(setActivity, ACTIVITY_REFRESH_INTERVAL_IN_S * 1000)
     setActivity()
   })
   global.client.on('message', async msg => {

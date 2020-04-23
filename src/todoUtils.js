@@ -7,18 +7,26 @@ TO DO:
 %LIST%
 `
 
+exports.activeTasks = async user => {
+  const tasks = await listTodo(user)
+  tasks.sort((a, b) => {
+    if (!!a.done === !!b.done)
+      return a.timestamp.localeCompare(b.timestamp)
+    return a.done ? -1 : 1
+  })
+  return tasks
+}
+
 exports.showList = async msg => {
-  let tasks = await listTodo(msg.author)
+  let tasks = await exports.activeTasks(msg.author),
+      output = []
   if (tasks.length)
-    await msg.channel.send(replaceText(REPLY, {
-      LIST: tasks.sort((a, b) => {
-        if (!!a.done === !!b.done)
-          return a.timestamp.localeCompare(b.timestamp)
-        return a.done ? -1 : 1
-      }).map(t => `${ strike_markdown(t) }${ t.task }${ strike_markdown(t) }`).join("\n")
-    }))
+    output = [replaceText(REPLY, {
+      LIST: tasks.map((t, i) => `${ i + 1 }. ${ strike_markdown(t) }${ t.task }${ strike_markdown(t) }`).join("\n")
+    })]
   if (!tasks.filter(t => !t.done).length)
-    msg.channel.send(`You dont have anything to do! ${ emoji('pat') }`)
+    output = [...output, `You dont have anything to do! ${ emoji('pat') }`]
+  await msg.channel.send(output.join("\n"))
 }
 
 const strike_markdown = task => task.done ? '~~' : ''

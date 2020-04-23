@@ -3,6 +3,17 @@ const { ACTIVITIES, WAIT_BEFORE_DESTROY_IN_S } = require('./constants')
 
 exports.pickRandom = arr => arr[Math.floor(Math.random() * arr.length)]
 
+exports.shuffle = arr => {
+  let j, x, i
+  for (i = arr.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1))
+    x = arr[i]
+    arr[i] = arr[j]
+    arr[j] = x
+  }
+  return arr
+}
+
 exports.emoji = name =>  global.client.emojis.get(name) || global.client.emojis.find(e => e.name === name) || name
 
 exports.setActivity = () => global.client.user.setActivity(...exports.pickRandom(ACTIVITIES))
@@ -37,3 +48,27 @@ exports.now = _ => moment.utc()
 exports.getAttachments = msg => exports.toArray(msg.attachments || { values: [] })
 
 exports.toArray = col => [...col.values()]
+
+const REPLACEMENTS = [
+  [/&quot;/g, '"'],
+  [/&#34;/g, '"'],
+  [/&amp;/g, '&'],
+  [/&#38;/g, '&'],
+  [/&apos;/g, "'"],
+  [/&#39;/g, "'"],
+  [/&#x2019;/g, "'"],
+  [/&lt;/g, '<'],
+  [/&#60;/g, '<'],
+  [/&gt;/g, '>'],
+  [/&#62;/g, '>'],
+  [/&#x2013;/g, '–'],
+  [/&#xF1;/g, 'ñ'],
+  [/&#xBF;/g, '¿'],
+  [/&#xA1;/g, '¡'],
+  [/&#xE1;/g, 'á'],
+  [/&#xE9;/g, 'é'],
+  [/&#xED;/g, 'í'],
+  [/&#xF3;/g, 'ó'],
+  [/&#xFA;/g, 'ú'],
+]
+exports.htmlUnescape = text => REPLACEMENTS.reduce((out, [regex, replacement]) => out.replace(regex, replacement), text)

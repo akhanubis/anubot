@@ -1,6 +1,6 @@
 const ytdl = require('ytdl-core')
 const { emoji, getAttachments } = require('../../utils')
-const { state, setState, onPlaySound, setLastState, showQueue, queueFromSpotify } = require('./musicUtils')
+const { state, setState, onPlaySound, setLastState, showQueue, queueFromSpotify, pauseOrResume } = require('./musicUtils')
 
 const
   REGEX = /^\!(p(lay)?|q(ueue)?)(\s+([^\n]+))?$/i,
@@ -27,8 +27,7 @@ exports.process = async msg => {
   if (!guild_id)
     return
 
-  const text_channel = state(guild_id).last_text_channel,
-        query = (msg.content.match(REGEX)[5] || '').trim(),
+  const query = (msg.content.match(REGEX)[5] || '').trim(),
         attachment = getAttachments(msg)[0],
         queue_command = (msg.content.match(REGEX)[1] || '').match(/^q/)
 
@@ -39,7 +38,7 @@ exports.process = async msg => {
       return
     }
     else {
-      text_channel.send(`Missing media ${ emoji('pepothink') }`)
+      pauseOrResume(guild_id, 'resume')
       return
     }
   }

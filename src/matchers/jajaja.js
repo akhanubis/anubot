@@ -4,7 +4,7 @@ const { now, onCooldown, pickRandom } = require('../utils')
 const
   REGEX = /\b(a{0,2}(j|h){1,3}a{1,3}((j|h){1,3}a{1,3})*(j|h){1,2}a{0,2}|(lo)+l|lo+l|(lu)+l|lu+l|lmao+|omegalul|k{4,})\b/i,
   NAME = 'Jajaja',
-  COMMAND_CD_IN_S = 120,
+  COMMAND_CD_IN_S = 180,
   LAUGH_CD_IN_S = 30,
   COOLDOWNS = {},
   INTENSITY_VARIANCE = 3,
@@ -27,6 +27,9 @@ exports.process = msg => {
         source_intensity = source_laugh.length,
         uppercase = source_laugh === source_laugh.toUpperCase()
         out_laugh = source_intensity >= MAJOR_LAUGH_MIN_INTENSITY ? major_laugh(source_intensity) : minor_laugh(source_intensity, uppercase)
+
+    if (msg.channel.guild.id === '453626383088746526' && Math.random() > 0.5)
+      out_laugh = '*silent laughing*'
     msg.channel.send(out_laugh)
   }
   COOLDOWNS[msg.channel.id].last_laugh = now()
