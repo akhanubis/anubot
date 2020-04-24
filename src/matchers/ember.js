@@ -14,6 +14,8 @@ exports.regex = REGEX
 
 exports.skip_reaction = true
 
+exports.listen_to_bots = true
+
 exports.process = async msg => {
   const lines = msg.content.split("\n"),
         winnerLineIndex = lines.findIndex(l => l.match(/ \(WINNER\) ────/)),
