@@ -65,9 +65,11 @@ const m = async _ => {
     or dm from unwanted person
     or message from unwanted server 
     */
-    if (msg.author.bot || (msg.channel.type === 'dm' && !ALLOWED_DM_USERS.includes(msg.author.id)) || (msg.channel.type === 'text' && !ALLOWED_SERVERS.includes(msg.channel.guild.id)))
+    if ((msg.channel.type === 'dm' && !ALLOWED_DM_USERS.includes(msg.author.id)) || (msg.channel.type === 'text' && !ALLOWED_SERVERS.includes(msg.channel.guild.id)))
       return
-    for (let m of MATCHERS)
+    for (let m of MATCHERS) {
+      if (!m.listen_to_bots && msg.author.bot)
+        continue
       if (msg.content.match(m.regex)) {
         console.log(`Processing message with ${ m.name }`)
         try {
@@ -82,6 +84,7 @@ const m = async _ => {
         }
         break
       }
+    }
   })
   setupMonitoring()
   global.client.login(DISCORD_TOKEN)
