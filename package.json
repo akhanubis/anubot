@@ -7,7 +7,7 @@
     "start-anubot-dev": "nodemon ./src/index.js",
     "start-waifubot-dev": "nodemon ./waifu/index.js",
     "start-anubot": "node ./src/index.js",
-    "start-waifubot": "node ./src/index.js",
+    "start-waifubot": "node ./waifu/index.js",
     "start": "npm run start-anubot & npm run start-waifubot",
     "deploy": "eb deploy"
   },
