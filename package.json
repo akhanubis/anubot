@@ -24,7 +24,6 @@
     "googleapis": "^42.0.0",
     "log-prefix": "^0.1.1",
     "moment": "^2.24.0",
-    "node-opus": "^0.3.2",
     "spotify-web-api-node": "^4.0.0",
     "string-similarity": "^3.0.0",
     "ytdl-core": "^0.29.5"
