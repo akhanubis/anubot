@@ -26,7 +26,7 @@ const set_price = async _ => {
         uniswap_price = eth_supply.div(waif_supply)
 
   global.client.guilds.forEach(guild => {
-    guild.members.get(global.client.user.id).setNickname(`$${ usd_price } (${ Math.sign(change_24h) }${ Math.abs(change_24h / 100).toFixed(1) }%)`)
+    guild.members.get(global.client.user.id).setNickname(`$${ usd_price } (${ change_24h >= 0 ? '+' : '' }${ change_24h.toFixed(1) }%)`)
   })
   global.client.user.setActivity(`${ uniswap_price.toFixed(8) } ETH`, { type: 'WATCHING' })
 }
