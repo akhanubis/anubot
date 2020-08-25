@@ -155,42 +155,17 @@ exports.ACTIVITIES = [
   ['the sunset', {type: 'WATCHING'}], 
   ['nightvale radio', { type: 'LISTENING' }],
   ['with manquito :)', {type: 'PLAYING'}],
-  ['with cactus :)', {type: 'PLAYING'}],
-  ['fuslie', { type: 'WATCHING' }],
-  ['bokchamps', { type: 'WATCHING' }],
+  ['jinnytty', { type: 'WATCHING' }],
+  ['esfandtv', { type: 'WATCHING' }],
   ['pealeaf', { type: 'LISTENING' }],
   ['hadestown', { type: 'LISTENING' }],
   ['hades', {type: 'PLAYING'}],
   ['secret hitler', {type: 'PLAYING'}]
 ]
 
-exports.PATS = {
-  Widowmaker: 'patwidow',
-  Sombra: 'patsombra',
-  Pharah: 'patpharah',
-  Mercy: 'patmercy',
-  Brigitte: 'patbrigitte',
-  Ana: 'patana',
-  Reinhardt: 'patrein',
-  Ashe: 'patashe'
-}
-
 exports.USER_IDS = {
-  cactus: '421125233970380810',
   anu: '113794572236226563',
   gaben: '314530943941738506'
-}
-
-exports.MAIN_EMOJIS = {
-  W: ['ole', 'mmyea'],
-  L: ['feelssadman', 'rager', 'pepehands', 'pepegun', 'pepefreeze', 'monkaS'],
-  D: ['498163652889804831', '498163653275680778']
-}
-
-exports.RESULT_EMOJIS = {
-  W: [':peach:', ':v:', ':cherries:', ':lemon:', ':strawberry:', ':medal:', ':four_leaf_clover:', ':dart:', ':love_letter:', ':avocado:', ':sunflower:', ':fire:', ':stuck_out_tongue:', ':beach_umbrella:'],
-  L: [':head_bandage:', ':speak_no_evil:', ':chicken:', ':boom:', ':wilted_rose:', ':8ball:', ':space_invader:', ':game_die:', ':knife:', ':crossed_swords:', ':skull_crossbones:', ':pill:', ':syringe:'],
-  D: [':peach:', ':v:', ':cherries:', ':lemon:', ':strawberry:', ':medal:', ':four_leaf_clover:', ':dart:', ':love_letter:', ':avocado:', ':sunflower:', ':fire:', ':stuck_out_tongue:', ':beach_umbrella:', ':head_bandage:', ':speak_no_evil:', ':chicken:', ':boom:', ':wilted_rose:', ':8ball:', ':space_invader:', ':game_die:', ':knife:', ':crossed_swords:', ':skull_crossbones:', ':pill:', ':syringe:']
 }
 
 exports.LAUGH_BITS = [
@@ -225,6 +200,5 @@ exports.PUBLIC_CONSTANTS = {
 }
 
 exports.MONITORED_GUILDS = {
-  '574791914038099971': '574791914038099984', /* aula */
-  '453626383088746526': '616012981909586142' /* desert */
+  '574791914038099971': '574791914038099984' /* aula */
 }
