@@ -7,12 +7,9 @@ const { ERROR_EMOJI, SUCCESS_EMOJI } = require('./constants')
 const { setupMonitoring } = require('./monitor.js')
 
 const MATCHERS = [
-  'match',
   'github',
   'stats',
   'music',
-  'matchDelete',
-  'matchReplace',
   'help',
   'constant',
   'translateLast',
