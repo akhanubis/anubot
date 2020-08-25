@@ -1,3 +1,4 @@
+require('log-prefix')('[Anubot]')
 const Discord = require('discord.js')
 const { DISCORD_TOKEN, ACTIVITY_REFRESH_INTERVAL_IN_S, ALLOWED_SERVERS, ALLOWED_DM_USERS } = require('./env')
 const { initAWS, initGoogle, initSpotify } = require('./startup')
