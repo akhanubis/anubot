@@ -2,24 +2,27 @@ require('log-prefix')('[Waifubot]')
 const Discord = require('discord.js')
 const axios = require('axios')
 const { WAIFU_DISCORD_TOKEN, INFURA_PROJECT_ID } = require('./env')
-const UniswapWaifu = require('./UniswapWaifu.json')
-const Web3 = require('web3')
 const BigNumber = require('bignumber.js')
 
 const CONTRACT_ADDRESS = '0xb27c012b36e79decb305fd1e512ba90eb035a6fa'
 
 global.client = new Discord.Client()
 
-const set_price = async contract => {
+const set_price = async _ => {
   console.log('Fetching price')
   const [coingecko_result, contract_result] = await Promise.all([
     axios.get('https://api.coingecko.com/api/v3/simple/price?ids=waifu-token&vs_currencies=usd&include_24hr_change=true'),
-    contract.methods.getReserves().call()
+    axios.post(`https://mainnet.infura.io/v3/${ INFURA_PROJECT_ID }`, {
+      "jsonrpc":"2.0",
+      "method":"eth_call",
+      "params": [{"to": CONTRACT_ADDRESS,"data": "0x0902f1ac" }, "latest"], /* data taken from contract.methods.getReserves().encodeABI() */
+      "id":1
+    }) 
   ])
   const usd_price = coingecko_result.data['waifu-token'].usd,
         change_24h = coingecko_result.data['waifu-token'].usd_24h_change,
-        waif_supply = new BigNumber(contract_result._reserve0),
-        eth_supply = new BigNumber(contract_result._reserve1),
+        waif_supply = new BigNumber(`0x${ contract_result.data.result.substr(2, 64) }`, 16).times(Math.pow(10, -18)),
+        eth_supply = new BigNumber(`0x${ contract_result.data.result.substr(66, 64) }`, 16).times(Math.pow(10, -18)),
         uniswap_price = eth_supply.div(waif_supply)
 
   global.client.guilds.forEach(guild => {
@@ -29,13 +32,10 @@ const set_price = async contract => {
 }
 
 const m = async _ => {
-  const web3 = new Web3(new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${ INFURA_PROJECT_ID }`)),
-        contract = new web3.eth.Contract(UniswapWaifu, CONTRACT_ADDRESS)
-
   global.client.on('ready', () => {
     console.log(`Logged in as ${ global.client.user.tag }!`)
-    setInterval(_ => set_price(contract), 60000)
-    set_price(contract)
+    setInterval(_ => set_price(), 60000)
+    set_price()
   })
   global.client.login(WAIFU_DISCORD_TOKEN)
 }
