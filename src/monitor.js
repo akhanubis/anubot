@@ -7,12 +7,12 @@ module.exports = {
     global.client.on('guildMemberAdd', member => {
       let notification_channel_id = MONITORED_GUILDS[member.guild.id]
       if (notification_channel_id)
-        member.guild.channels.get(notification_channel_id).send(`${ member_name(member) } joined the desert`)
+        member.guild.channels.get(notification_channel_id).send(`${ member_name(member) } joined the server`)
     })
     global.client.on('guildMemberRemove', member => {
       let notification_channel_id = MONITORED_GUILDS[member.guild.id]
       if (notification_channel_id)
-        member.guild.channels.get(notification_channel_id).send(`${ member_name(member) } left the desert`)
+        member.guild.channels.get(notification_channel_id).send(`${ member_name(member) } left the server`)
     })
   }
 }

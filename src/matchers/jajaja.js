@@ -28,8 +28,6 @@ exports.process = msg => {
         uppercase = source_laugh === source_laugh.toUpperCase()
         out_laugh = source_intensity >= MAJOR_LAUGH_MIN_INTENSITY ? major_laugh(source_intensity) : minor_laugh(source_intensity, uppercase)
 
-    if (msg.channel.guild.id === '453626383088746526' && Math.random() > 0.5)
-      out_laugh = '*silent laughing*'
     msg.channel.send(out_laugh)
   }
   COOLDOWNS[msg.channel.id].last_laugh = now()
