@@ -6,6 +6,8 @@ const BigNumber = require('bignumber.js')
 
 const CONTRACT_ADDRESS = '0xb27c012b36e79decb305fd1e512ba90eb035a6fa'
 
+const PRICE_PRECISION = 100000
+
 global.client = new Discord.Client()
 
 const set_price = async _ => {
@@ -26,15 +28,18 @@ const set_price = async _ => {
         uniswap_price = eth_supply.div(waif_supply)
 
   global.client.guilds.forEach(guild => {
-    guild.members.get(global.client.user.id).setNickname(`$${ usd_price } (${ change_24h >= 0 ? '+' : '' }${ change_24h.toFixed(1) }%)`)
+    guild.members.get(global.client.user.id).setNickname(`$${ Math.round(usd_price * PRICE_PRECISION) / PRICE_PRECISION } (${ change_24h >= 0 ? '+' : '' }${ change_24h.toFixed(1) }%)`)
   })
   global.client.user.setActivity(`${ uniswap_price.toFixed(8) } ETH`, { type: 'WATCHING' })
 }
 
 const m = async _ => {
+  let timeout
+
   global.client.on('ready', () => {
     console.log(`Logged in as ${ global.client.user.tag }!`)
-    setInterval(_ => set_price(), 60000)
+    clearInterval(timeout)
+    timeout = setInterval(set_price, 60000)
     set_price()
   })
   global.client.login(WAIFU_DISCORD_TOKEN)
