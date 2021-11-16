@@ -18,7 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "@google-cloud/translate": "^4.0.0",
-    "aws-sdk": "^2.450.0",
+    "aws-sdk": "^2.814.0",
     "axios": "^0.21.1",
     "bignumber.js": "^9.0.0",
     "cheerio": "^1.0.0-rc.3",
