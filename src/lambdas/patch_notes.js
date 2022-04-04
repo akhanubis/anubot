@@ -8,8 +8,7 @@ if (!process.env.PRODUCTION)
   require('dotenv').config()
 
 const PATCH_NOTES_CHANNELS = [
-  '469168969761161234',
-  '496828930121269258'
+  '469168969761161234'
 ]
 
 const putJobSuccess = (job_id, context) => {
