@@ -25,17 +25,6 @@ const MATCHERS = [
   'channelMessage',
   'jajaja',
   'ember',
-  'music/play',
-  'music/next',
-  'music/stop',
-  'music/join',
-  'music/leave',
-  'music/volume',
-  'music/pause',
-  'music/resume',
-  'music/lyrics',
-  'music/shuffle',
-  'music/sound',
   'dota/dota'
 ].map(f => require(`./matchers/${ f }`))
 
