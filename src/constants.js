@@ -140,26 +140,15 @@ exports.HEROES_LIST = {
 }
 
 exports.ACTIVITIES = [
-  ['the sr go down', { type: 'WATCHING' }],
-  ['leonard cohen', { type: 'LISTENING' }],
-  ['ariana grande', { type: 'LISTENING' }],
-  ['my teammates flame me :(', { type: 'LISTENING' }],
-  ['a happy song', { type: 'PLAYING' }],
-  ['with your heart', { type: 'PLAYING' }],
-  ['with my donger', { type: 'PLAYING' }],
-  ['overwatch league', { type: 'WATCHING' }],
-  ['kanye west', { type: 'LISTENING' }],
-  ['a song of ice and fire', { type: 'LISTENING' }], 
-  ['the game of thrones', {type: 'PLAYING'}], 
-  ['the sunrise', {type: 'WATCHING'}], 
-  ['the sunset', {type: 'WATCHING'}], 
-  ['nightvale radio', { type: 'LISTENING' }],
   ['with manquito :)', {type: 'PLAYING'}],
+  ['crypto go up', { type: 'WATCHING' }],
+  ['crypto go down', { type: 'WATCHING' }],
   ['jinnytty', { type: 'WATCHING' }],
-  ['esfandtv', { type: 'WATCHING' }],
-  ['pealeaf', { type: 'LISTENING' }],
+  ['39daph', { type: 'WATCHING' }],
+  ['gorgc', { type: 'WATCHING' }],
   ['hadestown', { type: 'LISTENING' }],
   ['hades', {type: 'PLAYING'}],
+  ['outer wilds', {type: 'PLAYING'}],
   ['secret hitler', {type: 'PLAYING'}]
 ]
 
