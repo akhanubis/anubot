@@ -21,7 +21,7 @@
     "discord.js": "12.5.3",
     "googleapis": "^100.0.0",
     "log-prefix": "^0.1.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "spotify-web-api-node": "^4.0.0",
     "string-similarity": "^3.0.0"
   },
