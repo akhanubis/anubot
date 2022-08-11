@@ -5,12 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start-anubot-dev": "nodemon ./src/index.js",
-    "start-waifubot-dev": "nodemon ./waifu/index.js",
-    "start-sushibot-dev": "nodemon ./sushi/index.js",
     "start-anubot": "node ./src/index.js",
-    "start-waifubot": "node ./waifu/index.js",
-    "start-sushibot": "node ./sushi/index.js",
-    "start": "npm run start-anubot & npm run start-waifubot & npm run start-sushibot",
+    "start": "npm run start-anubot",
     "deploy": "eb deploy"
   },
   "keywords": [],
